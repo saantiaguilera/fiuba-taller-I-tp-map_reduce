@@ -310,6 +310,9 @@ REQUEST_STATE Socket::receive(char *response,
 	REQUEST_STATE state = REQUEST_RECEIVING_DATA;
 	unsigned int bytesReceived = 0;
 
+	//Clean the response buffer first of all. To avoid trash
+	memset(response, 0, buffLength);
+
 	//As long as we are still receiving data,
 	//and our bytes received arent more than
 	//our max capacity, keep receiving

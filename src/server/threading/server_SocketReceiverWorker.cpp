@@ -27,9 +27,13 @@ SocketReceiverWorker::~SocketReceiverWorker() {
 
 void SocketReceiverWorker::flush(std::string &buffer) {
 	std::string line;
-	while (buffer.find("\n") != std::string::npos) {
+	bool stop = false;
+
+	while (!stop && buffer.find("\n") != std::string::npos) {
 		//Get a line
-		line = buffer.substr(0, buffer.find("\n") + 2); //TODO CHECK
+		line = buffer.substr(0, buffer.find("\n") + 1); //TODO CHECK
+
+		std::cout << "LINE TO PARSE IS:: " << line << std::endl;
 
 		//If its not the End of the recv
 		if (line.find("End") == std::string::npos) {
@@ -39,10 +43,12 @@ void SocketReceiverWorker::flush(std::string &buffer) {
 			postList->add(mappedModel);
 
 			std::cout << "Model hidrated:: " << mappedModel->first << " " << mappedModel->second.first << " " << mappedModel->second.second << std::endl;
-		}
+		} else stop = true; //We are in the end.
 
 		//Remove line from buffer
-		buffer = buffer.substr(buffer.find("\n") + 2);
+		buffer = buffer.substr(buffer.find("\n") + 1);
+
+		std::cout << "NOW BUFFER IS:: " << buffer << std::endl;
 	}
 	//Note that if socket sends a partial line the buffer
 	//Will still have some data on

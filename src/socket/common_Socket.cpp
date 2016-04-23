@@ -55,7 +55,7 @@ Socket::~Socket() {
  * @returns addrinfo_t* with the available address to connect
  * @see connectivityState in socket_t* for the connection state
  */
-addrinfo_t* Socket::getAddrInfo(std::string &hostName, std::string &port) {
+addrinfo_t* Socket::getAddrInfo(const std::string &hostName, const std::string &port) {
 	//Vars we will be using
 	int state;
 	addrinfo_t hints;
@@ -104,7 +104,7 @@ addrinfo_t* Socket::getAddrInfo(std::string &hostName, std::string &port) {
  * @note: This is a "pause" method. Meaning the thread will
  * freeze as long as a connection doesnt open
  */
-void Socket::connect(std::string &hostName, std::string &port) {
+void Socket::connect(const std::string &port, const std::string &hostName) {
 	//Init vars
 	addrinfo_t *results, *ptr;
 	int state;
@@ -152,7 +152,7 @@ void Socket::connect(std::string &hostName, std::string &port) {
  * @side: server
  * @see: connectivityState in socket_t* for the connection state
  */
-void Socket::bind(std::string &hostName, std::string &port) {
+void Socket::bind(const std::string &port, const std::string &hostName) {
 	//Get the address info
 	addrinfo_t *result = getAddrInfo(hostName, port);
 
@@ -244,7 +244,7 @@ Socket * Socket::accept() {
  *
  * @returns REQUEST_STATE with the state of the "transaction"
  */
-REQUEST_STATE Socket::send(std::string &messageData) {
+REQUEST_STATE Socket::send(const std::string &messageData) {
 	//Init vars
 	int sendResponse = 0;
 	REQUEST_STATE state = REQUEST_RECEIVING_DATA;

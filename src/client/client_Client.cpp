@@ -12,7 +12,7 @@
 
 Client::Client(std::string &host, std::string &port) {
 	socket = new Socket();
-	socket->connect(host, port);
+	socket->connect(port, host);
 
 	//TODO Create a parser and serializer base class if time is on my side
 	parser = new DayFileParser();
@@ -39,4 +39,7 @@ void Client::run() {
 
 		delete dayModel;
 	}
+
+	std::string end("End\n");
+	socket->send(end);
 }

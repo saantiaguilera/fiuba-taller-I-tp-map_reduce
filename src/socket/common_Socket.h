@@ -51,20 +51,22 @@ public:
 	//TODO Socket should throw exceptions when this is !=OK. And catch em all 150 pokemons
 	CONNECTIVITY_STATE connectivityState;
 
-	void connect(std::string &hostName, std::string &port);
-	void bind(std::string &hostName, std::string &port);
+	//No default port, no idea which could be
+	void connect(const std::string &port, const std::string &hostName = std::string());
+	void bind(const std::string &port, const std::string &hostName = std::string());
 
 	void listen(int listeners);
 	Socket * accept();
 
-	REQUEST_STATE send(std::string &messageData);
+	REQUEST_STATE send(const std::string &messageData);
 	REQUEST_STATE receive(std::string &response,
 			size_t buffLength);
 
 private:
-	addrinfo_t* getAddrInfo(std::string &hostName, std::string &port);
+	addrinfo_t* getAddrInfo(const std::string &hostName, const std::string &port);
 	void shutdown();
 	void close();
+
 	Socket(const Socket&);
 	Socket& operator=(const Socket&);
 };

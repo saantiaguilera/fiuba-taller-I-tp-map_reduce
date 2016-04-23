@@ -1,25 +1,25 @@
 /*
- * DayFileParser.cpp
+ * DayParser.cpp
  *
  *  Created on: Apr 23, 2016
  *      Author: santiago
  */
 
-#include "DayFileParser.h"
+#include "common_DayParser.h"
 
-DayFileParser::DayFileParser() {
+DayParser::DayParser() {
 }
 
-DayFileParser::~DayFileParser() {
+DayParser::~DayParser() {
 }
 
-DayModel * DayFileParser::parse(std::string &line) {
+DayModel * DayParser::parse(std::string &line) {
 	std::string day, temperature, city;
 	std::istringstream iss(line);
 
+	iss >> day;
 	iss >> city;
 	iss >> temperature;
-	iss >> day;
 
 	std::pair<std::string, int> innerDataHolder(city, atoi(temperature.c_str()));
 

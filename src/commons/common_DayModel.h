@@ -5,12 +5,12 @@
  *      Author: santiago
  */
 
-#ifndef COMMONS_DAYMODEL_H_
-#define COMMONS_DAYMODEL_H_
+#ifndef COMMONS_COMMON_DAYMODEL_H_
+#define COMMONS_COMMON_DAYMODEL_H_
 
 #include <string>
 #include <utility>
 
 typedef std::pair<int, std::pair<std::string, int> > DayModel;
 
-#endif /* COMMONS_DAYMODEL_H_ */
+#endif /* COMMONS_COMMON_DAYMODEL_H_ */

@@ -10,9 +10,9 @@
 
 class Socket;
 
-#include "../commons/DaySerializer.h"
-#include "../commons/DayFileParser.h"
-#include "../commons/DayModel.h"
+#include "../commons/common_DaySerializer.h"
+#include "../commons/common_DayFileParser.h"
+#include "../commons/common_DayModel.h"
 #include <string>
 
 class Client {

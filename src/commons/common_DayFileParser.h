@@ -5,14 +5,14 @@
  *      Author: santiago
  */
 
-#ifndef COMMONS_DAYFILEPARSER_H_
-#define COMMONS_DAYFILEPARSER_H_
+#ifndef COMMONS_COMMON_DAYFILEPARSER_H_
+#define COMMONS_COMMON_DAYFILEPARSER_H_
 
-#include "DayModel.h"
 #include <sstream>
 #include <utility>
 #include <cstdlib>
 #include <string>
+#include "common_DayModel.h"
 
 class DayFileParser {
 public:
@@ -26,4 +26,4 @@ private:
 	DayFileParser& operator=(const DayFileParser&);
 };
 
-#endif /* COMMONS_DAYFILEPARSER_H_ */
+#endif /* COMMONS_COMMON_DAYFILEPARSER_H_ */

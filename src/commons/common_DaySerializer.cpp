@@ -5,7 +5,7 @@
  *      Author: santiago
  */
 
-#include "DaySerializer.h"
+#include "common_DaySerializer.h"
 
 DaySerializer::DaySerializer() {
 }

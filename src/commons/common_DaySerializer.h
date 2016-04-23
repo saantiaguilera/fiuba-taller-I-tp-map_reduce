@@ -5,11 +5,11 @@
  *      Author: santiago
  */
 
-#ifndef COMMONS_DAYSERIALIZER_H_
-#define COMMONS_DAYSERIALIZER_H_
+#ifndef COMMONS_COMMON_DAYSERIALIZER_H_
+#define COMMONS_COMMON_DAYSERIALIZER_H_
 
-#include "DayModel.h"
 #include <string>
+#include "common_DayModel.h"
 
 class DaySerializer {
 public:
@@ -23,4 +23,4 @@ private:
 	DaySerializer& operator=(const DaySerializer&);
 };
 
-#endif /* COMMONS_DAYSERIALIZER_H_ */
+#endif /* COMMONS_COMMON_DAYSERIALIZER_H_ */

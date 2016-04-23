@@ -26,6 +26,7 @@ SUBDIRS := \
 src/client \
 src \
 src/commons \
+src/server \
 src/socket \
 src/threading \
 

@@ -12,8 +12,10 @@
  * @Constructor
  */
 SocketManagerWorker::SocketManagerWorker(Socket *socket,
-		ConcurrentList<Socket*> *list) :
-		mainSocket(socket), socketList(list) {
+		ConcurrentList<DayModel*> * dayList) :
+		mainSocket(socket), dayList(dayList) {
+	socketList = new std::list<Socket*>();
+	threadList = new std::list<Thread*>();
 	mainSocket->listen(SOMAXCONN);
 	//Dunno how many will be, use max available by man page
 }
@@ -23,7 +25,24 @@ SocketManagerWorker::SocketManagerWorker(Socket *socket,
  * @Destructor
  */
 SocketManagerWorker::~SocketManagerWorker() {
+	for (std::list<Socket*>::iterator it = socketList->begin() ;
+			it != socketList->end() ; ++it) {
+		delete (*it);
+	}
 
+	socketList->clear();
+
+	delete socketList;
+
+
+	for (std::list<Thread*>::iterator it = threadList->begin() ;
+			it != threadList->end() ; ++it) {
+		delete (*it);
+	}
+
+	threadList->clear();
+
+	delete threadList;
 }
 
 void SocketManagerWorker::run() {
@@ -31,9 +50,13 @@ void SocketManagerWorker::run() {
 		Socket *clientSocket = mainSocket->accept();
 
 		if (clientSocket->connectivityState != CONNECTIVITY_ERROR) {
-			socketList->add(clientSocket);
+			socketList->push_back(clientSocket);
 
 			//Spawn him a thread and let him work
+			SocketReceiverWorker *worker = new SocketReceiverWorker(clientSocket, dayList);
+			worker->start();
+
+			threadList->push_back(worker);
 		}
 	}
 }

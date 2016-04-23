@@ -11,7 +11,7 @@ Server::Server(std::string &port) {
 	socket = new Socket();
 	socket->bind(port);
 
-	clientList = new ConcurrentList<Socket*>();
+	dayList = new ConcurrentList<DayModel*>();
 
 	//TODO Create a parser and serializer base class if time is on my side
 	parser = new DayParser();
@@ -26,21 +26,21 @@ Server::~Server() {
 	delete parser;
 	delete serializer;
 
-	ConcurrentList<Socket*>::ConcurrentIterator iterator(clientList);
-	for (std::list<Socket*>::iterator it = iterator.begin() ;
-			it != iterator.end() ; ++it) {
+	ConcurrentList<DayModel*>::ConcurrentIterator dayIterator(dayList);
+	for (std::list<DayModel*>::iterator it = dayIterator.begin() ;
+			it != dayIterator.end() ; ++it) {
 		delete (*it);
 	}
 
-	clientList->clear();
+	dayList->clear();
 
-	delete clientList;
+	delete dayList;
 }
 
 void Server::run() {
 	/**
 	 * DONE - 1. Spawn a worker that listens and accepts sockets. Save sockets in a list.
-	 * 2. Each spawned worker should start recv data, for each model they parse, they append it to a
+	 * DONE - 2. Each spawned worker should start recv data, for each model they parse, they append it to a
 	 * thread safe list of day models
 	 * 3. When server finds Q, interrupts the socket manager worker (find a workaround, interrupt is
 	 * bad smell). Use a boolean shared element !!!  Goto 9. and return back in a while
@@ -53,6 +53,6 @@ void Server::run() {
 	 * 8. Iterate the reducer and print its data
 	 * 9. Dance ＼(￣ー＼)(／ー￣)／ ＼(￣ー＼)(／ー￣)／
 	 */
-	SocketManagerWorker managerWorker(socket, clientList);
+	SocketManagerWorker managerWorker(socket, dayList);
 	managerWorker.start();
 }

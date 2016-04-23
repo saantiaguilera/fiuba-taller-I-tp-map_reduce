@@ -22,7 +22,7 @@
 class Server {
 private:
 	Socket * socket;
-	ConcurrentList<Socket*> * clientList;
+	ConcurrentList<DayModel*> * dayList;
 
 	DayParser * parser;
 	DaySerializer * serializer;

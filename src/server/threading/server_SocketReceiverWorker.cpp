@@ -33,7 +33,7 @@ void SocketReceiverWorker::flush(std::string &buffer) {
 		//Get a line
 		line = buffer.substr(0, buffer.find("\n") + 1); //TODO CHECK
 
-	//	std::cout << "LINE TO PARSE IS:: " << line << std::endl;
+		//	std::cout << "LINE TO PARSE IS:: " << line << std::endl;
 
 		//If its not the End of the recv
 		if (line.find("End") == std::string::npos) {
@@ -42,13 +42,16 @@ void SocketReceiverWorker::flush(std::string &buffer) {
 
 			postList->add(mappedModel);
 
-			std::cout << "Model hidrated:: " << mappedModel->first << " " << mappedModel->second.first << " " << mappedModel->second.second << std::endl;
-		} else stop = true; //We are in the end.
+			std::cout << "Model hidrated:: " << mappedModel->first << " "
+					<< mappedModel->second.first << " "
+					<< mappedModel->second.second << std::endl;
+		} else
+			stop = true; //We are in the end.
 
 		//Remove line from buffer
 		buffer = buffer.substr(buffer.find("\n") + 1);
 
-	//	std::cout << "NOW BUFFER IS:: " << buffer << std::endl;
+		//	std::cout << "NOW BUFFER IS:: " << buffer << std::endl;
 	}
 	//Note that if socket sends a partial line the buffer
 	//Will still have some data on
@@ -59,21 +62,22 @@ void SocketReceiverWorker::run() {
 	REQUEST_STATE state = REQUEST_RECEIVING_DATA;
 	std::string total;
 
-	char recvbuf[64];
+	char recvbuf[65];
+	recvbuf[64] = 0; //To avoid overflow
+	//Although receive already does this, but
+	//valgrind still complaints
 
-	while (!done &&
-			state != REQUEST_ERROR) {
+	while (!done && state != REQUEST_ERROR) {
 		//Receive the code of the request
-		state = mainSocket->receive(&recvbuf[0],
-				64);
+		state = mainSocket->receive(&recvbuf[0], 64);
 
 		//Check for errors
 		if (state == REQUEST_ERROR) {
 			printf("Error receiving\n");
 		} else {
-			total.append(recvbuf);
+			total.append(std::string(recvbuf));
 
-		//	std::cout << "Received:: " << std::endl << total << std::endl;
+			//	std::cout << "Received:: " << std::endl << total << std::endl;
 
 			if (total.find("End\n") != std::string::npos)
 				done = true;

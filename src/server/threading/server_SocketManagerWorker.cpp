@@ -36,7 +36,6 @@ SocketManagerWorker::~SocketManagerWorker() {
 
 	delete socketList;
 
-
 	for (std::list<Thread*>::iterator it = threadList->begin() ;
 			it != threadList->end() ; ++it) {
 		delete (*it);

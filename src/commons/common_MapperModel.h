@@ -11,6 +11,7 @@
 #include <string>
 #include <utility>
 
+//(day, (city, temperature))
 typedef std::pair<int, std::pair<std::string, int> > MapperModel;
 
 #endif /* COMMONS_COMMON_MAPPERMODEL_H_ */

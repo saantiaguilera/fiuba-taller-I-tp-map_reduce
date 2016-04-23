@@ -53,7 +53,10 @@ void Server::receive() {
 }
 
 void Server::reduce(std::list<ReducerWorker*> &list) {
-
+	for (std::list<ReducerWorker*>::iterator it = list.begin() ;
+			it != list.end() ; ++it) {
+		(*it)->join();
+	}
 }
 
 void Server::run() {
@@ -64,10 +67,10 @@ void Server::run() {
 	 * DONE - 3. When server finds Q, interrupts the socket manager worker (find a workaround, interrupt is
 	 * bad smell). Use a boolean shared element !!!  Goto 9. and return back in a while
 	 * DONE - 4. Iterate through the socket list joining them (so we start 5. knowing all data is filled)
-	 * 5. Iterate through the model list and go removing by id (like. first remove all day:1 and append it
+	 * DONE - 5. Iterate through the model list and go removing by id (like. first remove all day:1 and append it
 	 * to another list). For each day spawn a worker with his according list. Add this workers to another list.
-	 * 6. Each worker should reduce the models (thats ez) and save in an array of dimen n (n == no of days)
-	 * 7. Iterate through the worker list and go joining them (so we can start 8. knowing all reducers finished
+	 * DONE - 6. Each worker should reduce the models (thats ez) and save in an array of dimen n (n == no of days)
+	 * DONE - 7. Iterate through the worker list and go joining them (so we can start 8. knowing all reducers finished
 	 * their job)
 	 * 8. Iterate the reducer and print its data
 	 * 9. Dance ＼(￣ー＼)(／ー￣)／ ＼(￣ー＼)(／ー￣)／

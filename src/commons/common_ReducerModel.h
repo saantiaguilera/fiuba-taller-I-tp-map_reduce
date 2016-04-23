@@ -11,6 +11,8 @@
 #include <string>
 #include <utility>
 
+
+//(day, (citIES, temperature))
 typedef std::pair<int, std::pair<std::string, int> > ReducerModel;
 
 #endif /* COMMONS_COMMON_REDUCERMODEL_H_ */

@@ -42,13 +42,15 @@ private:
 	std::list<Socket*> * socketList;
 	std::list<Thread*> * threadList;
 
+	bool *interrupted;
+
 	ConcurrentList<DayModel*> * dayList;
 
 protected:
 	virtual void run();
 
 public:
-	explicit SocketManagerWorker(Socket *socket, ConcurrentList<DayModel*> * dayList);
+	explicit SocketManagerWorker(Socket *socket, bool *interrupted, ConcurrentList<DayModel*> * dayList);
 	virtual ~SocketManagerWorker();
 
 private:

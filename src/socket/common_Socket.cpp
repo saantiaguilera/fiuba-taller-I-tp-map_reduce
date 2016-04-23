@@ -208,8 +208,8 @@ void Socket::listen(int listeners) {
 Socket * Socket::accept() {
 	Socket *socket = new Socket();
 
-	//Freeze the thread, try connecting
-	socket->mSocket = ::accept(mSocket, NULL, NULL);
+	//COnnect
+	socket->mSocket = ::accept4(mSocket, NULL, NULL, SOCK_NONBLOCK);
 
 	if (socket->mSocket == CONNECTIVITY_ERROR) {
 		//Damn, an error

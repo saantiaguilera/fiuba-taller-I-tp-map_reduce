@@ -42,7 +42,7 @@ void Server::run() {
 	 * DONE - 1. Spawn a worker that listens and accepts sockets. Save sockets in a list.
 	 * DONE - 2. Each spawned worker should start recv data, for each model they parse, they append it to a
 	 * thread safe list of day models
-	 * 3. When server finds Q, interrupts the socket manager worker (find a workaround, interrupt is
+	 * DONE - 3. When server finds Q, interrupts the socket manager worker (find a workaround, interrupt is
 	 * bad smell). Use a boolean shared element !!!  Goto 9. and return back in a while
 	 * 4. Iterate through the socket list joining them (so we start 5. knowing all data is filled)
 	 * 5. Iterate through the model list and go removing by id (like. first remove all day:1 and append it
@@ -53,6 +53,20 @@ void Server::run() {
 	 * 8. Iterate the reducer and print its data
 	 * 9. Dance ＼(￣ー＼)(／ー￣)／ ＼(￣ー＼)(／ー￣)／
 	 */
-	SocketManagerWorker managerWorker(socket, dayList);
+	bool interrupted = false;
+	std::string line;
+
+	SocketManagerWorker managerWorker(socket, &interrupted, dayList);
 	managerWorker.start();
+
+	while (!interrupted && std::getline(std::cin, line))
+		if (line == "q")
+			interrupted = true;
+
+	//Join the manager, which will join all his connections first
+	managerWorker.join();
+	//If we want to free some mem here, we can scope the manager and let
+	//The scope finish here so he gets freed + all his threads and sockets.
+	//I dont like braces in the middle of the code. Sorry wont happen.
+
 }

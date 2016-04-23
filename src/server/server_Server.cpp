@@ -109,25 +109,39 @@ void Server::run() {
 
 	std::list<ReducerWorker*> workersList;
 
+	std::cout << "Created workers and unblocked list" << std::endl;
+
+	std::cout << "Size of unblockedList is:: " << unblockedList.size() << std::endl;
+
 	while (unblockedList.size() != 0) {
 		int dayToParse = -1;
 
 		ReducerWorker *worker = new ReducerWorker();
 
+		std::cout << "Created a reducer worker" << std::endl;
+
 		for (std::list<MapperModel*>::iterator it = unblockedList.begin() ;
-				it != unblockedList.end() ; ++it) {
+				it != unblockedList.end() ; ) {
 			if (dayToParse == -1) {
 				//Grab the first day and lets spawn a worker for all this same day
 				dayToParse = (*it)->first;
+
+				std::cout << "Appending to worker data from day:: " << dayToParse << std::endl;
 			}
 
 			if (dayToParse == (*it)->first) {
 				//If its the same type of day
 				worker->addData((*it));
 
-				unblockedList.remove((*it));
-			}
+				it = unblockedList.erase(it);
+
+				std::cout << "Value added." << std::endl;
+			} else ++it;
+
+			std::cout << "Next value..." << std::endl;
 		}
+
+		std::cout << "Finished adding values." << std::endl;
 
 		ReducerModel *reducerModel = new ReducerModel();
 

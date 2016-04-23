@@ -22,5 +22,12 @@ MapperSerializer::~MapperSerializer() {
  */
 std::string MapperSerializer::serialize(MapperModel &dayModel) {
 	//TODO Check if maybe eol is already added.
-	return std::string(dayModel.first + " " + dayModel.second.first + " " + dayModel.second.first + "\n");
+	std::ostringstream oss;
+
+	oss << dayModel.first << " " << dayModel.second.first << " "
+			<< dayModel.second.second << "\n";
+
+	std::cout << "Serialize:: " << oss.str();
+
+	return oss.str();
 }

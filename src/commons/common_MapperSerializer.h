@@ -9,6 +9,8 @@
 #define COMMONS_COMMON_MAPPERSERIALIZER_H_
 
 #include <string>
+#include <sstream>
+#include <iostream>
 
 #include "common_MapperModel.h"
 

@@ -37,6 +37,8 @@ void SocketReceiverWorker::flush(std::string &buffer) {
 			MapperModel *mappedModel = parser->parse(line);
 
 			postList->add(mappedModel);
+
+			std::cout << "Model hidrated:: " << mappedModel->first << " " << mappedModel->second.first << " " << mappedModel->second.second << std::endl;
 		}
 
 		//Remove line from buffer
@@ -49,22 +51,25 @@ void SocketReceiverWorker::flush(std::string &buffer) {
 void SocketReceiverWorker::run() {
 	bool done = false;
 	REQUEST_STATE state = REQUEST_RECEIVING_DATA;
-	std::string buffer, total;
+	std::string total;
+
+	char recvbuf[64];
 
 	while (!done &&
 			state != REQUEST_ERROR) {
 		//Receive the code of the request
-		state = mainSocket->receive(buffer,
+		state = mainSocket->receive(&recvbuf[0],
 				64);
 
 		//Check for errors
 		if (state == REQUEST_ERROR) {
 			printf("Error receiving\n");
 		} else {
-			total.append(buffer);
-			buffer.clear();
+			total.append(recvbuf);
 
-			if (total.find("End\n") == std::string::npos)
+			std::cout << "Received:: " << std::endl << total << std::endl;
+
+			if (total.find("End\n") != std::string::npos)
 				done = true;
 
 			flush(total);

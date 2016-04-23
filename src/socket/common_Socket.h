@@ -66,9 +66,10 @@ public:
 
 	void listen(int listeners);
 	Socket * accept();
+	int select();
 
 	REQUEST_STATE send(const std::string &messageData);
-	REQUEST_STATE receive(std::string &response,
+	REQUEST_STATE receive(char *response,
 			size_t buffLength);
 
 private:

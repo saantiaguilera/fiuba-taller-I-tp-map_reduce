@@ -20,6 +20,8 @@ Client::Client(std::string &host, std::string &port) {
 
 	if (socket->connectivityState != CONNECTIVITY_OK)
 		throw std::runtime_error("Cant connect!! (ﾉಥ益ಥ）ﾉ﻿ ┻━┻"); //refactor this
+
+	std::cout << "Finished initializing" << std::endl;
 }
 
 Client::~Client() {
@@ -34,11 +36,18 @@ void Client::run() {
 	while (std::getline(std::cin, line)) {
 		MapperModel *mapperModel = parser->parse(line);
 
+		std::cout << "Model is:: " << mapperModel->first << " " << mapperModel->second.first << " " << mapperModel->second.second << std::endl;
+
 		std::string mappedData = serializer->serialize(*mapperModel);
-		socket->send(mappedData);
+
+		if (socket->send(mappedData) != REQUEST_RECEIVING_DATA)
+			throw std::runtime_error("Cant send!! (ﾉಥ益ಥ）ﾉ﻿ ┻━┻"); //refactor this
+		else std::cout << "Data sent." << std::endl;
 
 		delete mapperModel;
 	}
+
+	std::cout << "Finished reading" << std::endl;
 
 	std::string end("End\n");
 	socket->send(end);

@@ -49,28 +49,40 @@ SocketManagerWorker::~SocketManagerWorker() {
 
 void SocketManagerWorker::run() {
 	while (!(*interrupted)) {
-		//Maybe we could use a sleep here so it doesnt do
-		//So much activity?
+		std::cout << "Connecting..." << std::endl;
 
-		//Note that this accept is nonblocking.
-		Socket *clientSocket = mainSocket->accept();
+		int queueConnections = mainSocket->select();
 
-		if (clientSocket->connectivityState != CONNECTIVITY_ERROR) {
-			socketList->push_back(clientSocket);
+		if (queueConnections > 0) {
+			for (int i = 0 ; i < queueConnections ; ++i) {
+				Socket *clientSocket = mainSocket->accept();
 
-			//Spawn him a thread and let him work
-			SocketReceiverWorker *worker = new SocketReceiverWorker(clientSocket, mapperDataList);
-			worker->start();
+				if (clientSocket->connectivityState != CONNECTIVITY_ERROR) {
+					std::cout << "Connection accepted in SM" << std::endl;
 
-			threadList->push_back(worker);
-		} else delete clientSocket; //There was an error, delete alloc mem
+					socketList->push_back(clientSocket);
+
+					//Spawn him a thread and let him work
+					SocketReceiverWorker *worker = new SocketReceiverWorker(clientSocket, mapperDataList);
+					worker->start();
+
+					threadList->push_back(worker);
+
+					std::cout << "Forked new thread for the connection" << std::endl;
+				} else delete clientSocket; //There was an error, delete alloc mem
+			}
+		}
 	}
+
+	std::cout << "interruption in SM, joining connections" << std::endl;
 
 	//We got interrupted. Start joining
 	for (std::list<Thread*>::iterator it = threadList->begin() ;
 			it != threadList->end() ; ++it) {
 		(*it)->join();
 	}
+
+	std::cout << "All threads joined from SM" << std::endl;
 
 	//We are done. Let us be merged, peace out !
 }

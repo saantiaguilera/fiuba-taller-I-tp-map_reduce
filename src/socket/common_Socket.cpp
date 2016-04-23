@@ -50,6 +50,7 @@ addrinfo_t* Socket::getAddrInfo(const std::string &hostName, const std::string &
 	int state;
 	addrinfo_t hints;
 	addrinfo_t *result;
+	std::string host = hostName;
 
 	//Clear the hints struct (or fill it with 0 ?)
 	memset(&hints, 0, sizeof(addrinfo_t));
@@ -64,17 +65,19 @@ addrinfo_t* Socket::getAddrInfo(const std::string &hostName, const std::string &
 	 */
 	std::string localHost = "127.0.0.1";
 
-	if (hostName != localHost)
+	if (hostName == "" || hostName == localHost) {
 		hints.ai_flags = LOCALHOST;
-	else
+		host = "localhost";
+	} else {
 		hints.ai_flags = 0;
+	}
 
 	//Get the addrinfo of it (inside results).
-	state = getaddrinfo(hostName.c_str(), port.c_str(), &hints, &result);
+	state = getaddrinfo(host.c_str(), port.c_str(), &hints, &result);
 
 	//If error, set it in the socket connection and return NULL
 	if (state != 0) {
-		std::cout << "Error in getaddrinfo: %s\n" << gai_strerror(state) << std::endl;
+		std::cout << "Error in getaddrinfo: " << gai_strerror(state) << std::endl;
 		connectivityState = CONNECTIVITY_ERROR;
 		return NULL;
 	}
@@ -115,7 +118,7 @@ void Socket::connect(const std::string &port, const std::string &hostName) {
 		if (mSocket == CONNECTIVITY_ERROR) {
 			//We got an error, this address is down so try with the next
 			connectivityState = CONNECTIVITY_ERROR;
-			std::cout << "Error: %s\n" << strerror(errno) << std::endl;
+			std::cout << "Error: " << strerror(errno) << std::endl;
 		} else {
 			//Address went fine, lets try to connect
 			state = ::connect(mSocket, ptr->ai_addr, ptr->ai_addrlen);
@@ -123,7 +126,7 @@ void Socket::connect(const std::string &port, const std::string &hostName) {
 			if (state == CONNECTIVITY_ERROR) {
 				//Coudlnt connect (502?). Close the socket and try with the next
 				connectivityState = CONNECTIVITY_ERROR;
-				std::cout << "Error: %s\n" << strerror(errno) << std::endl;
+				std::cout << "Error: " << strerror(errno) << std::endl;
 	            Socket::close();
 			}
 
@@ -175,7 +178,7 @@ void Socket::bind(const std::string &port, const std::string &hostName) {
 
     if (connectivityState == CONNECTIVITY_ERROR) {
     	//If we couldnt bind, close the socket and return
-    	std::cout << "Error: %s\n" << strerror(errno) << std::endl;
+    	std::cout << "Error: " << strerror(errno) << std::endl;
     	Socket::close();
     	return;
     }
@@ -199,28 +202,45 @@ void Socket::listen(int listeners) {
 
 	if (response == CONNECTIVITY_ERROR) {
 		//We got an error trying to listen, close the socket
-		std::cout << "Error: %s\n" << strerror(errno) << std::endl;
+		std::cout << "Error: " << strerror(errno) << std::endl;
 		Socket::close();
 		connectivityState = CONNECTIVITY_ERROR;
 	}
 }
 
+int Socket::select() {
+	int socketsReady;
+
+	fd_set fdsetSocket;
+	FD_ZERO(&fdsetSocket);
+	FD_SET(mSocket, &fdsetSocket);
+
+	struct timeval tv;
+	tv.tv_sec = 0;
+	tv.tv_usec = 10000 * 100 * 10; //1msec * 100 = 1 sec * 10 = 10 sec
+
+    if ((socketsReady = ::select(FD_SETSIZE, &fdsetSocket, NULL, NULL, &tv)) < 0)
+		std::cout << "Error: " << strerror(errno) << std::endl;
+
+    return socketsReady;
+}
+
 Socket * Socket::accept() {
-	Socket *socket = new Socket();
+	Socket *socketToFork = new Socket();
 
 	//COnnect
-	socket->mSocket = ::accept4(mSocket, NULL, NULL, SOCK_NONBLOCK);
+	socketToFork->mSocket = ::accept(mSocket, NULL, NULL);
 
-	if (socket->mSocket == CONNECTIVITY_ERROR) {
+	if (socketToFork->mSocket == CONNECTIVITY_ERROR) {
 		//Damn, an error
-		std::cout << "Error: %s\n" << strerror(errno) << std::endl;
-		socket->connectivityState =  CONNECTIVITY_ERROR;
+		std::cout << "Error: " << strerror(errno) << std::endl;
+		socketToFork->connectivityState =  CONNECTIVITY_ERROR;
 	} else {
 		//We did it!
-		socket->connectivityState =  CONNECTIVITY_OK;
+		socketToFork->connectivityState =  CONNECTIVITY_OK;
 	}
 
-	return socket;
+	return socketToFork;
 }
 
 /**
@@ -253,6 +273,7 @@ REQUEST_STATE Socket::send(const std::string &messageData) {
 
 		if (sendResponse < 0) {
 			state = REQUEST_ERROR;
+			std::cout << "Error: " << strerror(errno) << std::endl;
 		} else {
 			if (sendResponse == 0)
 				state = REQUEST_SOCKET_CLOSED;
@@ -282,7 +303,7 @@ REQUEST_STATE Socket::send(const std::string &messageData) {
  *
  * @returns REQUEST_STATE with the state of the "transaction"
  */
-REQUEST_STATE Socket::receive(std::string &response,
+REQUEST_STATE Socket::receive(char *response,
 		size_t buffLength) {
 	//Init vars
 	int sendResponse = 0;
@@ -307,6 +328,8 @@ REQUEST_STATE Socket::receive(std::string &response,
 				bytesReceived += sendResponse;
 		}
 	}
+
+	return state;
 
 	return state;
 }

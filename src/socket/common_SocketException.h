@@ -14,6 +14,9 @@
 #include <string>
 #include <exception>
 
+/**
+ * Exception class for the socket.
+ */
 class SocketException: public std::exception {
 	private:
 		std::string message;

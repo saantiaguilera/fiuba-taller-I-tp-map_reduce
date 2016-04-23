@@ -15,6 +15,11 @@
 
 #include "common_MapperModel.h"
 
+/**
+ * Parser class for
+ * building a MapperModel
+ * from standard input.
+ */
 class MapperFileParser {
 public:
 	MapperFileParser();

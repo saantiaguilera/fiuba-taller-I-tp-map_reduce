@@ -14,6 +14,12 @@
 
 #include "common_MapperModel.h"
 
+/**
+ * Default mapper serializer class
+ *
+ * Serializes to string a mapper model
+ * in the default way. (k,v)
+ */
 class MapperSerializer {
 public:
 	MapperSerializer();

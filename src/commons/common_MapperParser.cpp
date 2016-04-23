@@ -9,12 +9,26 @@
 #include <string>
 #include "common_MapperParser.h"
 
+/**
+ * @Public
+ * @Constructor
+ */
 MapperParser::MapperParser() {
 }
 
+/**
+ * @Public
+ * @Destructor
+ */
 MapperParser::~MapperParser() {
 }
 
+/**
+ * @Public
+ * Parses a line in the form
+ * (k,v) (MapperSerializer eg)
+ * and builds a MapperModel
+ */
 MapperModel * MapperParser::parse(std::string &line) {
 	std::string day, temperature, city;
 	std::istringstream iss(line);

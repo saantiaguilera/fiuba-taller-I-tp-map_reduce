@@ -34,25 +34,52 @@ ReducerWorker::~ReducerWorker() {
 	delete collection;
 }
 
+/**
+ * @Private
+ *
+ * Attach the variable were we will be
+ * posting our results.
+ * It should be locked when r/w but
+ * since we are the only ones using
+ * it (server will start using them
+ * after we are joined), its alread
+ * threadsafe.
+ */
 void ReducerWorker::attachResultContainer(ReducerModel *resultContainer) {
 	this->resultContainer = resultContainer;
 }
 
+/**
+ * @Private
+ * Append to the data list a data
+ */
 void ReducerWorker::addData(MapperModel *data) {
 	collection->push_back(data);
 }
 
+/**
+ * @Protected
+ * @Runnable of the thread.
+ */
 void ReducerWorker::run() {
-	std::list<std::string> cities;
+	//Init local vars
 	std::string citiesToString;
+	std::list<std::string> cities;
 	int hottestTemperature = -273; //Use absolute zero as init value
 	int day = -1;
 
 	for (std::list<MapperModel*>::iterator it = collection->begin();
 			it != collection->end(); ++it) {
+		//Set the day if not setted already
 		if (day == -1)
 			day = (*it)->first;
 
+		/**
+		 * If the temp of this data is higher
+		 * than the current hottest one,
+		 * clear the history of that temperature
+		 * and use this one
+		 */
 		if ((*it)->second.second > hottestTemperature) {
 			//Its higher, clear cities list, add this one and update temp
 			cities.clear();
@@ -66,6 +93,7 @@ void ReducerWorker::run() {
 	}
 
 	//On done. Update the reducer model
+	//Sort the cities alphabetically (case-sensitive)
 	cities.sort();
 
 	//To string.

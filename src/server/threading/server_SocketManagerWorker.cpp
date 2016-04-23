@@ -47,9 +47,11 @@ SocketManagerWorker::~SocketManagerWorker() {
 }
 
 void SocketManagerWorker::run() {
+	//As long as the main thread doesnt interrupt us
 	while (!(*interrupted)) {
 		/**
-		 * There wont be an exception because time isnt on my side
+		 * I didnt created a particular exception because time
+		 * isnt on my side
 		 * (I need to create a global exception that the main ui
 		 * catches it or send a signal and also the main ui catches
 		 * it). I would go for the first one :)
@@ -57,10 +59,21 @@ void SocketManagerWorker::run() {
 		 * select()
 		 * accept()
 		 */
+		/**
+		 * If we just use accept, we will freeze the thread
+		 * and if the main ui tries to joins us (changing
+		 * the interrupt flag) but there are not more
+		 * connections, we will never join.
+		 *
+		 * So we use select with a 10second timeout to
+		 * check for available connecitons
+		 */
 		int queueConnections = mainSocket->select();
 
 		if (queueConnections > 0) {
+			//Loop through all the connections available
 			for (int i = 0; i < queueConnections; ++i) {
+				//Accept 'em all
 				Socket *clientSocket = mainSocket->accept();
 
 				if (clientSocket->connectivityState != CONNECTIVITY_ERROR) {

@@ -194,8 +194,6 @@ void Socket::bind(const std::string &port, const std::string &hostName) {
  * @side: server
  * @requires: socket binded to a host:port
  * @see: connectivityState in socket_t* for the connection state
- * @note: This is a "pause" method. Meaning the
- * thread will freeze as long as a connection doesnt open
  */
 void Socket::listen(int listeners) {
 	//Start listening
@@ -209,6 +207,16 @@ void Socket::listen(int listeners) {
 	}
 }
 
+/**
+ * Fetches the number of socket connections available
+ *
+ * @side: server
+ * @requires: socket binded to a host:port
+ * @note: Will pause the thread for 10 seconds while
+ * fetching the number of connections available
+ *
+ * @return number of connections available
+ */
 int Socket::select() {
 	int socketsReady;
 
@@ -227,6 +235,17 @@ int Socket::select() {
 	return socketsReady;
 }
 
+/**
+ * Accept a socket trying to connect
+ *
+ * @side: server
+ * @requires: socket binded and listening
+ * @note: Freezes thread
+ *
+ * @return Socket for the given connection
+ * @note: Check the connectivity state in case
+ * it couldnt connect properly
+ */
 Socket * Socket::accept() {
 	Socket *socketToFork = new Socket();
 

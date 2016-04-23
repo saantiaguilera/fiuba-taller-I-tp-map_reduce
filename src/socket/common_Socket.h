@@ -63,6 +63,7 @@ public:
 	void bind(const std::string &port, const std::string &hostName =
 			std::string());
 
+	//No default here neither, no idea which could be
 	void listen(int listeners);
 	Socket * accept();
 	int select();

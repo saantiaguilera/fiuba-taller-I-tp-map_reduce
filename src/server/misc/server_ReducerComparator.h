@@ -10,6 +10,10 @@
 
 #include "../../commons/common_ReducerModel.h"
 
+/**
+ * Comparator class for sorting
+ * reducer models
+ */
 class ReducerComparator {
 public:
 	ReducerComparator();

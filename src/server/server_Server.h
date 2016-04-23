@@ -25,6 +25,9 @@
 #include "../commons/common_MapperParser.h"
 #include "../commons/common_MapperSerializer.h"
 
+/**
+ * Class for a server
+ */
 class Server {
 private:
 	Socket * socket;

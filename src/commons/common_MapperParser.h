@@ -15,6 +15,12 @@
 
 #include "common_MapperModel.h"
 
+/**
+ * Default class for parsing a string
+ * and build a MapperModel
+ * string should be serialized in form
+ * (k,v)
+ */
 class MapperParser {
 public:
 	MapperParser();

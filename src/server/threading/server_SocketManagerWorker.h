@@ -32,7 +32,7 @@
  * of them and of course
  * deleting.
  *
- * @note: Only the dayList can present race conditions
+ * @note: Only the mapperDataList can present race conditions
  * since it will be accessed from more than one thread.
  *
  * The socket list and the thread list

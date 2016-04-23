@@ -16,6 +16,9 @@ class Socket;
 #include "../commons/common_MapperModel.h"
 #include <string>
 
+/**
+ * Class for a client
+ */
 class Client {
 private:
 	Socket * socket;

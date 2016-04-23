@@ -79,8 +79,6 @@ void SocketReceiverWorker::run() {
 		} else {
 			total.append(std::string(recvbuf));
 
-			//std::cout << "Received:: " << std::endl << total << std::endl;
-
 			if (total.find("End\n") != std::string::npos)
 				done = true;
 

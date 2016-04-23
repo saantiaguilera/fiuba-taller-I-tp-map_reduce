@@ -34,13 +34,15 @@ void Client::run() {
 	std::string line;
 
 	while (std::getline(std::cin, line)) {
-		MapperModel *mapperModel = parser->parse(line);
-		std::string mappedData = serializer->serialize(*mapperModel);
-		delete mapperModel;
+		if (!line.empty()) {
+			MapperModel *mapperModel = parser->parse(line);
+			std::string mappedData = serializer->serialize(*mapperModel);
+			delete mapperModel;
 
-		if (socket->send(mappedData) != REQUEST_RECEIVING_DATA)
-			throw SocketException(
-					"Client failed to send data: " + mappedData);
+			if (socket->send(mappedData) != REQUEST_RECEIVING_DATA)
+				throw SocketException(
+						"Client failed to send data: " + mappedData);
+		}
 	}
 
 	std::string end("End\n");

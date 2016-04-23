@@ -9,21 +9,18 @@
 #include <string>
 #include "server_Server.h"
 
+#define QUIT "q"
+
 Server::Server(std::string &port) {
+	mappedDataList = new ConcurrentList<MapperModel*>();
+	reducedDataList = new std::list<MapperModel*>();
+
 	socket = new Socket();
 	socket->bind(port);
 
-	std::cout << "Binded" << std::endl;
-
-	mappedDataList = new ConcurrentList<MapperModel*>();
-
-	reducedDataList = new std::list<MapperModel*>();
-
 	if (socket->connectivityState != CONNECTIVITY_OK)
-		throw std::runtime_error("Cant bind!! (ﾉಥ益ಥ）ﾉ﻿ ┻━┻");
-	//refactor this
-
-	std::cout << "Initialized" << std::endl;
+		throw SocketException(
+				"Server failed to bind to " + port);
 }
 
 Server::~Server() {
@@ -49,33 +46,21 @@ void Server::receive() {
 	SocketManagerWorker managerWorker(socket, interrupted, mappedDataList);
 	managerWorker.start();
 
-	std::cout << "Forked thread for socket manager" << std::endl;
-
-	while (!(*interrupted) && std::getline(std::cin, line)) {
-		std::cout << "std::getLine:: " << line << std::endl;
-		if (line == "q")
+	while (!(*interrupted) && std::getline(std::cin, line))
+		if (line == QUIT)
 			(*interrupted) = true;
-	}
-
-	std::cout << "Q detected. Stop accepting connections" << std::endl;
 
 	//Join the manager, which will join all his connections first
 	managerWorker.join();
-
-	std::cout << "All threads joined" << std::endl;
 
 	delete interrupted;
 }
 
 void Server::reduce(std::list<ReducerWorker*> &list) {
-	std::cout << "Joining threads" << std::endl;
-
 	for (std::list<ReducerWorker*>::iterator it = list.begin();
 			it != list.end(); ++it) {
 		(*it)->join();
 	}
-
-	std::cout << "Finished joining, printing.." << std::endl;
 
 	reducedDataList->sort(ReducerComparator::compare);
 	for (std::list<ReducerModel*>::iterator it = reducedDataList->begin();
@@ -112,8 +97,6 @@ void Server::run() {
 	 */
 	receive();
 
-	std::cout << "Finished receiving" << std::endl;
-
 	//At this point there are no race conditions.
 	//Unblock the ConcurrentList and
 	//use it as a normal one (so we can remove while iterating)
@@ -121,17 +104,10 @@ void Server::run() {
 
 	std::list<ReducerWorker*> workersList;
 
-	std::cout << "Created workers and unblocked list" << std::endl;
-
-	std::cout << "Size of unblockedList is:: " << unblockedList.size()
-			<< std::endl;
-
 	while (unblockedList.size() != 0) {
 		int dayToParse = -1;
 
 		ReducerWorker *worker = new ReducerWorker();
-
-		std::cout << "Created a reducer worker" << std::endl;
 
 		for (std::list<MapperModel*>::iterator it = unblockedList.begin();
 				it != unblockedList.end();) {
@@ -139,9 +115,6 @@ void Server::run() {
 				//Grab the first day and lets spawn a
 				//worker for all this same day
 				dayToParse = (*it)->first;
-
-				std::cout << "Appending to worker data from day:: "
-						<< dayToParse << std::endl;
 			}
 
 			if (dayToParse == (*it)->first) {
@@ -149,16 +122,10 @@ void Server::run() {
 				worker->addData((*it));
 
 				it = unblockedList.erase(it);
-
-				std::cout << "Value added." << std::endl;
 			} else {
 				++it;
 			}
-
-			std::cout << "Next value..." << std::endl;
 		}
-
-		std::cout << "Finished adding values." << std::endl;
 
 		ReducerModel *reducerModel = new ReducerModel();
 
@@ -168,14 +135,10 @@ void Server::run() {
 		worker->start();
 
 		workersList.push_back(worker);
-
-		std::cout << "Forked reducer for day:: " << dayToParse << std::endl;
 	}
 
 	//Reduce the list whilst printing
 	reduce(workersList);
-
-	std::cout << "All workers reduced" << std::endl;
 
 	//Delete the idle threads in memory
 	for (std::list<ReducerWorker*>::iterator it = workersList.begin();

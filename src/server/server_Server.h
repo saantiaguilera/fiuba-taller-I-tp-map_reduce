@@ -15,6 +15,7 @@
 #include "../threading/common_Thread.h"
 #include "../socket/common_Socket.h"
 #include "misc/server_ReducerComparator.h"
+#include "../socket/common_SocketException.h"
 #include <iostream>
 #include "stdexcept"
 #include <list>

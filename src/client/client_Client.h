@@ -10,6 +10,7 @@
 
 class Socket;
 
+#include "../socket/common_SocketException.h"
 #include "../commons/common_MapperSerializer.h"
 #include "../commons/common_MapperFileParser.h"
 #include "../commons/common_MapperModel.h"

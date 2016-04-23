@@ -48,8 +48,15 @@ SocketManagerWorker::~SocketManagerWorker() {
 
 void SocketManagerWorker::run() {
 	while (!(*interrupted)) {
-		std::cout << "Connecting..." << std::endl;
-
+		/**
+		 * There wont be an exception because time isnt on my side
+		 * (I need to create a global exception that the main ui
+		 * catches it or send a signal and also the main ui catches
+		 * it). I would go for the first one :)
+		 * This applies for:
+		 * select()
+		 * accept()
+		 */
 		int queueConnections = mainSocket->select();
 
 		if (queueConnections > 0) {
@@ -57,8 +64,6 @@ void SocketManagerWorker::run() {
 				Socket *clientSocket = mainSocket->accept();
 
 				if (clientSocket->connectivityState != CONNECTIVITY_ERROR) {
-					std::cout << "Connection accepted in SM" << std::endl;
-
 					socketList->push_back(clientSocket);
 
 					//Spawn him a thread and let him work
@@ -67,9 +72,6 @@ void SocketManagerWorker::run() {
 					worker->start();
 
 					threadList->push_back(worker);
-
-					std::cout << "Forked new thread for the connection"
-							<< std::endl;
 				} else {
 					delete clientSocket; //There was an error, delete alloc mem
 				}
@@ -77,15 +79,11 @@ void SocketManagerWorker::run() {
 		}
 	}
 
-	std::cout << "interruption in SM, joining connections" << std::endl;
-
 	//We got interrupted. Start joining
 	for (std::list<Thread*>::iterator it = threadList->begin();
 			it != threadList->end(); ++it) {
 		(*it)->join();
 	}
-
-	std::cout << "All threads joined from SM" << std::endl;
 
 	//We are done. Let us be merged, peace out !
 }

@@ -32,9 +32,7 @@ void SocketReceiverWorker::flush(std::string &buffer) {
 
 	while (!stop && buffer.find("\n") != std::string::npos) {
 		//Get a line
-		line = buffer.substr(0, buffer.find("\n") + 1); //TODO CHECK
-
-		//std::cout << "LINE TO PARSE IS:: " << line << std::endl;
+		line = buffer.substr(0, buffer.find("\n") + 1);
 
 		//If its not the End of the recv
 		if (line.find("End") == std::string::npos) {
@@ -42,18 +40,12 @@ void SocketReceiverWorker::flush(std::string &buffer) {
 			MapperModel *mappedModel = parser->parse(line);
 
 			postList->add(mappedModel);
-
-			std::cout << "Model hidrated:: " << mappedModel->first << " "
-					<< mappedModel->second.first << " "
-					<< mappedModel->second.second << std::endl;
 		} else {
 			stop = true; //We are in the end.
 		}
 
 		//Remove line from buffer
 		buffer = buffer.substr(buffer.find("\n") + 1);
-
-		//std::cout << "NOW BUFFER IS:: " << buffer << std::endl;
 	}
 	//Note that if socket sends a partial line the buffer
 	//Will still have some data on
@@ -73,9 +65,17 @@ void SocketReceiverWorker::run() {
 		//Receive the code of the request
 		state = mainSocket->receive(&recvbuf[0], 64);
 
-		//Check for errors
+		//Check for errors.
+		/**
+		 * There wont be an exception because time isnt on my side
+		 * (I need to create a global exception that the main ui
+		 * catches it or send a signal and also the main ui catches
+		 * it). I would go for the first one :)
+		 */
 		if (state == REQUEST_ERROR) {
-			printf("Error receiving\n");
+			done = true;
+			std::cout << "Error while receiving data" << std::endl;
+			std::cout << "Error: " << strerror(errno) << std::endl;
 		} else {
 			total.append(std::string(recvbuf));
 

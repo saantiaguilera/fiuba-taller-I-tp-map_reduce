@@ -25,7 +25,16 @@ Server::~Server() {
 	delete socket;
 	delete parser;
 	delete serializer;
-	delete clientList; //TODO Care of the leak of his elements
+
+	ConcurrentList<Socket*>::ConcurrentIterator iterator(clientList);
+	for (std::list<Socket*>::iterator it = iterator.begin() ;
+			it != iterator.end() ; ++it) {
+		delete (*it);
+	}
+
+	clientList->clear();
+
+	delete clientList;
 }
 
 void Server::run() {

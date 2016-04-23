@@ -59,12 +59,51 @@ public:
 	 	mutex.unlock();
 	 }
 
+	 void clear() {
+		 mutex.lock();
+
+		 elementList.clear();
+
+		 mutex.unlock();
+	 }
+
+	 //So he can access our private stuff. c++11 onwards
+	 //Let us do this automatically w inner classes
+	 friend class ConcurrentIterator;
+
+	 class ConcurrentIterator {
+	 	 private:
+		 	 //Because we cant access outer elements from inner classes
+		 	 //available from c++11 onwards
+		 	 ConcurrentList *list;
+
+		 public:
+			 explicit ConcurrentIterator(ConcurrentList *list) :
+			 	 	 	 list(list) {
+				 list->mutex.lock();
+			 }
+
+			 virtual ~ConcurrentIterator(){
+				 list->mutex.unlock();
+			 }
+
+			 typename std::list<Element>::iterator begin() {
+				 return list->elementList.begin();
+			 }
+
+			 typename std::list<Element>::iterator end() {
+				 return list->elementList.end();
+			 }
+
+		 private:
+			 ConcurrentIterator(const ConcurrentIterator&);
+			 ConcurrentIterator& operator=(const ConcurrentIterator&);
+	 };
+
 private:
 	 ConcurrentList(const ConcurrentList&);
 	 ConcurrentList& operator=(const ConcurrentList&);
 
 };
-
-
 
 #endif /* COMMONS_COMMON_THREADSAFELIST_H_ */

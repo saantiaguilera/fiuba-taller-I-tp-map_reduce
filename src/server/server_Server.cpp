@@ -5,13 +5,13 @@
  *      Author: santiago
  */
 
-#include "../socket/common_Socket.h"
-#include "stdexcept"
 #include "server_Server.h"
 
 Server::Server(std::string &port) {
 	socket = new Socket();
 	socket->bind(port);
+
+	clientList = new ConcurrentList<Socket*>();
 
 	//TODO Create a parser and serializer base class if time is on my side
 	parser = new DayParser();
@@ -25,15 +25,16 @@ Server::~Server() {
 	delete socket;
 	delete parser;
 	delete serializer;
+	delete clientList; //TODO Care of the leak of his elements
 }
 
 void Server::run() {
 	/**
-	 * 1. Spawn a worker that listens and accepts sockets. Save sockets in a list.
+	 * DONE - 1. Spawn a worker that listens and accepts sockets. Save sockets in a list.
 	 * 2. Each spawned worker should start recv data, for each model they parse, they append it to a
 	 * thread safe list of day models
 	 * 3. When server finds Q, interrupts the socket manager worker (find a workaround, interrupt is
-	 * bad smell).
+	 * bad smell). Use a boolean shared element !!!  Goto 9. and return back in a while
 	 * 4. Iterate through the socket list joining them (so we start 5. knowing all data is filled)
 	 * 5. Iterate through the model list and go removing by id (like. first remove all day:1 and append it
 	 * to another list). For each day spawn a worker with his according list. Add this workers to another list.
@@ -43,4 +44,6 @@ void Server::run() {
 	 * 8. Iterate the reducer and print its data
 	 * 9. Dance ＼(￣ー＼)(／ー￣)／ ＼(￣ー＼)(／ー￣)／
 	 */
+	SocketManagerWorker managerWorker(socket, clientList);
+	managerWorker.start();
 }

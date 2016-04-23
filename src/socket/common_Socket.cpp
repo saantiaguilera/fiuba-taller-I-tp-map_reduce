@@ -5,16 +5,6 @@
  *      Author: santiago
  */
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <cstring>
-#include <string>
-#include "errno.h"
-#include <iostream>
-#include <cstdio>
 #include "common_Socket.h"
 
 /**

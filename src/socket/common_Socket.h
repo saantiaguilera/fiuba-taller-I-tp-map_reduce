@@ -12,6 +12,15 @@
 #define _POSIX_C_SOURCE 1
 #endif
 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <cstring>
+#include "errno.h"
+#include <iostream>
+#include <cstdio>
 #include <string>
 
 //Definitions for knowing what the possible filter values are

@@ -27,6 +27,7 @@ src/client \
 src \
 src/commons \
 src/server \
+src/server/threading \
 src/socket \
 src/threading \
 

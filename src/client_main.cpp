@@ -10,7 +10,6 @@
 #include <stdexcept>
 
 #include "socket/common_SocketException.h"
-#include "server/server_Server.h"
 #include "client/client_Client.h"
 
 int main(int argc, const char *argv[]) {

@@ -13,9 +13,9 @@
  */
 SocketManagerWorker::SocketManagerWorker(Socket *socket,
 		bool *interrupted,
-		ConcurrentList<DayModel*> * dayList) :
+		ConcurrentList<MapperModel*> * mapperDataList) :
 		mainSocket(socket), interrupted(interrupted),
-		dayList(dayList) {
+		mapperDataList(mapperDataList) {
 	socketList = new std::list<Socket*>();
 	threadList = new std::list<Thread*>();
 	mainSocket->listen(SOMAXCONN);
@@ -59,7 +59,7 @@ void SocketManagerWorker::run() {
 			socketList->push_back(clientSocket);
 
 			//Spawn him a thread and let him work
-			SocketReceiverWorker *worker = new SocketReceiverWorker(clientSocket, dayList);
+			SocketReceiverWorker *worker = new SocketReceiverWorker(clientSocket, mapperDataList);
 			worker->start();
 
 			threadList->push_back(worker);

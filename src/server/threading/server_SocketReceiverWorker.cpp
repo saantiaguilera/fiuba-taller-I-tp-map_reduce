@@ -12,9 +12,9 @@
  * @Constructor
  */
 SocketReceiverWorker::SocketReceiverWorker(Socket *socket,
-		ConcurrentList<DayModel*> *list) :
+		ConcurrentList<MapperModel*> *list) :
 		mainSocket(socket), postList(list) {
-	parser = new DayParser();
+	parser = new MapperParser();
 }
 
 /**
@@ -34,9 +34,9 @@ void SocketReceiverWorker::flush(std::string &buffer) {
 		//If its not the End of the recv
 		if (line.find("End") == std::string::npos) {
 			//Create a day and put it in the list
-			DayModel *day = parser->parse(line);
+			MapperModel *mappedModel = parser->parse(line);
 
-			postList->add(day);
+			postList->add(mappedModel);
 		}
 
 		//Remove line from buffer

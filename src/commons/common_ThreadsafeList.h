@@ -59,6 +59,20 @@ public:
 	 	mutex.unlock();
 	 }
 
+	 int size() {
+		 mutex.lock();
+
+		 int size  = elementList.size();
+
+		 mutex.unlock();
+
+		 return size;
+	 }
+
+	 std::list<Element> unblock() {
+		 return elementList;
+	 }
+
 	 void clear() {
 		 mutex.lock();
 

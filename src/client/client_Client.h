@@ -10,17 +10,17 @@
 
 class Socket;
 
-#include "../commons/common_DaySerializer.h"
-#include "../commons/common_DayFileParser.h"
-#include "../commons/common_DayModel.h"
+#include "../commons/common_MapperSerializer.h"
+#include "../commons/common_MapperFileParser.h"
+#include "../commons/common_MapperModel.h"
 #include <string>
 
 class Client {
 private:
 	Socket * socket;
 
-	DayFileParser * parser;
-	DaySerializer * serializer;
+	MapperFileParser * parser;
+	MapperSerializer * serializer;
 
 public:
 	explicit Client(std::string &host, std::string &port);

@@ -15,8 +15,8 @@ Client::Client(std::string &host, std::string &port) {
 	socket->connect(port, host);
 
 	//TODO Create a parser and serializer base class if time is on my side
-	parser = new DayFileParser();
-	serializer = new DaySerializer();
+	parser = new MapperFileParser();
+	serializer = new MapperSerializer();
 
 	if (socket->connectivityState != CONNECTIVITY_OK)
 		throw std::runtime_error("Cant connect!! (ﾉಥ益ಥ）ﾉ﻿ ┻━┻"); //refactor this
@@ -32,12 +32,12 @@ void Client::run() {
 	std::string line;
 
 	while (std::getline(std::cin, line)) {
-		DayModel *dayModel = parser->parse(line);
+		MapperModel *mapperModel = parser->parse(line);
 
-		std::string mappedData = serializer->serialize(*dayModel);
+		std::string mappedData = serializer->serialize(*mapperModel);
 		socket->send(mappedData);
 
-		delete dayModel;
+		delete mapperModel;
 	}
 
 	std::string end("End\n");

@@ -9,9 +9,8 @@
 #define SERVER_SERVER_SERVER_H_
 
 #include "../commons/common_ThreadsafeList.h"
-#include "../commons/common_DaySerializer.h"
-#include "../commons/common_DayParser.h"
-#include "../commons/common_DayModel.h"
+#include "../commons/common_MapperModel.h"
+#include "../commons/common_ReducerModel.h"
 #include "../threading/common_Mutex.h"
 #include "../threading/common_Thread.h"
 #include "../socket/common_Socket.h"
@@ -19,14 +18,16 @@
 #include "stdexcept"
 #include "threading/server_SocketManagerWorker.h"
 #include <string>
+#include "threading/server_ReducerWorker.h"
+#include "../commons/common_MapperParser.h"
+#include "../commons/common_MapperSerializer.h"
 
 class Server {
 private:
 	Socket * socket;
-	ConcurrentList<DayModel*> * dayList;
 
-	DayParser * parser;
-	DaySerializer * serializer;
+	ConcurrentList<MapperModel*> * mappedDataList;
+	std::list<ReducerModel*> * reducedDataList;
 
 public:
 	explicit Server(std::string &port);
@@ -37,6 +38,9 @@ public:
 private:
 	Server(const Server&);
 	Server& operator=(const Server&);
+
+	void receive();
+	void reduce(std::list<ReducerWorker*> &workers);
 };
 
 #endif /* SERVER_SERVER_SERVER_H_ */

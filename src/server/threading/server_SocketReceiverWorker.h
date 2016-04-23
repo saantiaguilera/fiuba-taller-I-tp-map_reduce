@@ -10,10 +10,10 @@
 
 #include <list>
 #include <pthread.h>
-#include "../../commons/common_DayModel.h"
 #include "../../socket/common_Socket.h"
 #include "../../threading/common_Mutex.h"
-#include "../../commons/common_DayParser.h"
+#include "../../commons/common_MapperModel.h"
+#include "../../commons/common_MapperParser.h"
 
 #include "../../threading/common_Thread.h"
 #include "../../commons/common_ThreadsafeList.h"
@@ -24,15 +24,15 @@
 class SocketReceiverWorker: public Thread {
 private:
 	Socket * mainSocket;
-	ConcurrentList<DayModel*> * postList;
-	DayParser * parser;
+	ConcurrentList<MapperModel*> * postList;
+	MapperParser * parser;
 
 	void flush(std::string &line);
 protected:
 	virtual void run();
 
 public:
-	explicit SocketReceiverWorker(Socket *socket, ConcurrentList<DayModel*> * list);
+	explicit SocketReceiverWorker(Socket *socket, ConcurrentList<MapperModel*> * list);
 	virtual ~SocketReceiverWorker();
 
 private:

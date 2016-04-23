@@ -13,7 +13,7 @@
 #include "server_SocketReceiverWorker.h"
 #include "../../socket/common_Socket.h"
 #include "../../threading/common_Mutex.h"
-#include "../../commons/common_DayModel.h"
+#include "../../commons/common_MapperModel.h"
 
 #include "../../threading/common_Thread.h"
 #include "../../commons/common_ThreadsafeList.h"
@@ -44,13 +44,13 @@ private:
 
 	bool *interrupted;
 
-	ConcurrentList<DayModel*> * dayList;
+	ConcurrentList<MapperModel*> * mapperDataList;
 
 protected:
 	virtual void run();
 
 public:
-	explicit SocketManagerWorker(Socket *socket, bool *interrupted, ConcurrentList<DayModel*> * dayList);
+	explicit SocketManagerWorker(Socket *socket, bool *interrupted, ConcurrentList<MapperModel*> * mapperDataList);
 	virtual ~SocketManagerWorker();
 
 private:

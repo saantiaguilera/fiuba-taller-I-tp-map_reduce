@@ -5,12 +5,12 @@
  *      Author: santiago
  */
 
-#include "common_DaySerializer.h"
+#include "common_MapperSerializer.h"
 
-DaySerializer::DaySerializer() {
+MapperSerializer::MapperSerializer() {
 }
 
-DaySerializer::~DaySerializer() {
+MapperSerializer::~MapperSerializer() {
 }
 
 /**
@@ -20,7 +20,7 @@ DaySerializer::~DaySerializer() {
  * Hence, there will be 2 parsers :(
  * Long live boilerplate :D
  */
-std::string DaySerializer::serialize(DayModel &dayModel) {
+std::string MapperSerializer::serialize(MapperModel &dayModel) {
 	//TODO Check if maybe eol is already added.
 	return std::string(dayModel.first + " " + dayModel.second.first + " " + dayModel.second.first + "\n");
 }

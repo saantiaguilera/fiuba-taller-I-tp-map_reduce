@@ -44,7 +44,7 @@ void Server::run() {
 	 * thread safe list of day models
 	 * DONE - 3. When server finds Q, interrupts the socket manager worker (find a workaround, interrupt is
 	 * bad smell). Use a boolean shared element !!!  Goto 9. and return back in a while
-	 * 4. Iterate through the socket list joining them (so we start 5. knowing all data is filled)
+	 * DONE - 4. Iterate through the socket list joining them (so we start 5. knowing all data is filled)
 	 * 5. Iterate through the model list and go removing by id (like. first remove all day:1 and append it
 	 * to another list). For each day spawn a worker with his according list. Add this workers to another list.
 	 * 6. Each worker should reduce the models (thats ez) and save in an array of dimen n (n == no of days)
@@ -66,7 +66,7 @@ void Server::run() {
 	//Join the manager, which will join all his connections first
 	managerWorker.join();
 	//If we want to free some mem here, we can scope the manager and let
-	//The scope finish here so he gets freed + all his threads and sockets.
+	//the scope finish here so he gets freed + all his threads and sockets.
 	//I dont like braces in the middle of the code. Sorry wont happen.
 
 }

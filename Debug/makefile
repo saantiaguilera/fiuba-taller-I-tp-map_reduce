@@ -11,6 +11,7 @@ RM := rm -rf
 -include src/threading/subdir.mk
 -include src/socket/subdir.mk
 -include src/server/threading/subdir.mk
+-include src/server/misc/subdir.mk
 -include src/server/subdir.mk
 -include src/commons/subdir.mk
 -include src/client/subdir.mk

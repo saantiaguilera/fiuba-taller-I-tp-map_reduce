@@ -57,6 +57,13 @@ void Server::reduce(std::list<ReducerWorker*> &list) {
 			it != list.end() ; ++it) {
 		(*it)->join();
 	}
+
+	reducedDataList->sort(ReducerComparator::compare);
+	for (std::list<ReducerModel*>::iterator it = reducedDataList->begin() ;
+			it != reducedDataList->end() ; ++it) {
+		std::cout << (*it)->first << ": " << (*it)->second.first
+				<< " (" << (*it)->second.second << ")" << std::endl;
+	}
 }
 
 void Server::run() {
@@ -72,7 +79,7 @@ void Server::run() {
 	 * DONE - 6. Each worker should reduce the models (thats ez) and save in an array of dimen n (n == no of days)
 	 * DONE - 7. Iterate through the worker list and go joining them (so we can start 8. knowing all reducers finished
 	 * their job)
-	 * 8. Iterate the reducer and print its data
+	 * DONE - 8. Iterate the reducer and print its data
 	 * 9. Dance ＼(￣ー＼)(／ー￣)／ ＼(￣ー＼)(／ー￣)／
 	 */
 	receive();

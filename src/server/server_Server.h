@@ -14,6 +14,7 @@
 #include "../threading/common_Mutex.h"
 #include "../threading/common_Thread.h"
 #include "../socket/common_Socket.h"
+#include "misc/server_ReducerComparator.h"
 #include <iostream>
 #include "stdexcept"
 #include "threading/server_SocketManagerWorker.h"

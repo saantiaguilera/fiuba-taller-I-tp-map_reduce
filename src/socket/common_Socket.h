@@ -47,7 +47,7 @@ private:
 
 public:
 	Socket();
-	~Socket();
+	virtual ~Socket();
 
 	void connect(std::string &hostName, std::string &port);
 	void bind(std::string &hostName, std::string &port);
@@ -64,6 +64,8 @@ private:
 	addrinfo_t* getAddrInfo(std::string &hostName, std::string &port);
 	void shutdown();
 	void close();
+	Socket(const Socket&);
+	Socket& operator=(const Socket&);
 };
 
 #endif /* SOCKET_COMMON_SOCKET_H_ */

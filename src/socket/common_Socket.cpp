@@ -250,7 +250,7 @@ REQUEST_STATE Socket::send(std::string &messageData,
 	int sendResponse = 0;
 	REQUEST_STATE state = REQUEST_RECEIVING_DATA;
 	//TODO refactor ? It should have a OK enum
-	int bytesSent = 0;
+	unsigned int bytesSent = 0;
 
 	//As long as the bytes sent arent more than
 	//our length,  or the request suffered
@@ -298,7 +298,7 @@ REQUEST_STATE Socket::receive(std::string &response,
 	//Init vars
 	int sendResponse = 0;
 	REQUEST_STATE state = REQUEST_RECEIVING_DATA;
-	int bytesReceived = 0;
+	unsigned int bytesReceived = 0;
 
 	//As long as we are still receiving data,
 	//and our bytes received arent more than

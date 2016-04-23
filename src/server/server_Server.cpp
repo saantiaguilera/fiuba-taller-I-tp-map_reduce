@@ -28,5 +28,19 @@ Server::~Server() {
 }
 
 void Server::run() {
-
+	/**
+	 * 1. Spawn a worker that listens and accepts sockets. Save sockets in a list.
+	 * 2. Each spawned worker should start recv data, for each model they parse, they append it to a
+	 * thread safe list of day models
+	 * 3. When server finds Q, interrupts the socket manager worker (find a workaround, interrupt is
+	 * bad smell).
+	 * 4. Iterate through the socket list joining them (so we start 5. knowing all data is filled)
+	 * 5. Iterate through the model list and go removing by id (like. first remove all day:1 and append it
+	 * to another list). For each day spawn a worker with his according list. Add this workers to another list.
+	 * 6. Each worker should reduce the models (thats ez) and save in an array of dimen n (n == no of days)
+	 * 7. Iterate through the worker list and go joining them (so we can start 8. knowing all reducers finished
+	 * their job)
+	 * 8. Iterate the reducer and print its data
+	 * 9. Dance ＼(￣ー＼)(／ー￣)／ ＼(￣ー＼)(／ー￣)／
+	 */
 }

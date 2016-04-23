@@ -10,6 +10,8 @@ RM := rm -rf
 -include sources.mk
 -include src/threading/subdir.mk
 -include src/socket/subdir.mk
+-include src/commons/subdir.mk
+-include src/client/subdir.mk
 -include src/subdir.mk
 -include subdir.mk
 -include objects.mk

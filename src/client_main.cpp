@@ -1,15 +1,15 @@
 //============================================================================
-// Name        : tp.cpp
+// Name        : client_main.cpp
 // Author      : Santi Aguilera
 // Version     :
 // Copyright   : Your copyright notice
-// Description : Hello World in C++, Ansi-style
 //============================================================================
 
 #include <iostream>
-using namespace std;
+#include <string>
+#include <stdexcept>
 
 int main() {
-	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
+
 	return 0;
 }

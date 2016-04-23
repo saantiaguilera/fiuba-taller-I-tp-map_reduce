@@ -244,8 +244,7 @@ Socket * Socket::accept() {
  *
  * @returns REQUEST_STATE with the state of the "transaction"
  */
-REQUEST_STATE Socket::send(std::string &messageData,
-		size_t buffLength) {
+REQUEST_STATE Socket::send(std::string &messageData) {
 	//Init vars
 	int sendResponse = 0;
 	REQUEST_STATE state = REQUEST_RECEIVING_DATA;
@@ -255,11 +254,11 @@ REQUEST_STATE Socket::send(std::string &messageData,
 	//As long as the bytes sent arent more than
 	//our length,  or the request suffered
 	//something, keep trying
-	while (bytesSent < buffLength &&
+	while (bytesSent < messageData.length() &&
 			state == REQUEST_RECEIVING_DATA) {
 		sendResponse = ::send(mSocket,
 				&messageData[bytesSent],
-				buffLength - bytesSent,
+				messageData.length() - bytesSent,
 				MSG_NOSIGNAL);
 
 		if (sendResponse < 0) {

@@ -43,11 +43,13 @@ typedef struct addrinfo addrinfo_t;
 class Socket {
 private:
 	int mSocket;
-	CONNECTIVITY_STATE connectivityState;
 
 public:
 	Socket();
 	virtual ~Socket();
+
+	//TODO Socket should throw exceptions when this is !=OK. And catch em all 150 pokemons
+	CONNECTIVITY_STATE connectivityState;
 
 	void connect(std::string &hostName, std::string &port);
 	void bind(std::string &hostName, std::string &port);
@@ -55,8 +57,7 @@ public:
 	void listen(int listeners);
 	Socket * accept();
 
-	REQUEST_STATE send(std::string &messageData,
-			size_t buffLength);
+	REQUEST_STATE send(std::string &messageData);
 	REQUEST_STATE receive(std::string &response,
 			size_t buffLength);
 

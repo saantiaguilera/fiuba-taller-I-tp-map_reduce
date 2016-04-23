@@ -22,18 +22,23 @@
  * Worker thread class for the socket manager
  *
  * We keep track of two things
- * - Sockets created (RAII). We are the ones in charge of the sockets
- * since we created them. So when we finish joining all the threads we
+ * - Sockets created (RAII). We are the ones
+ * in charge of the sockets
+ * since we created them. So when we finish
+ * joining all the threads we
  * just delete the sockets
  *
- * - Threads spawned. We will be joining all of them and of course
+ * - Threads spawned. We will be joining all
+ * of them and of course
  * deleting.
  *
  * @note: Only the dayList can present race conditions
  * since it will be accessed from more than one thread.
  *
- * The socket list and the thread list only this class can access it
- * so it wont present race conditions, so for faster and eficient stuff
+ * The socket list and the thread list
+ * only this class can access it
+ * so it wont present race conditions,
+ * so for faster and eficient stuff
  * we wont be using a ConcurrentList instance
  */
 class SocketManagerWorker: public Thread {
@@ -50,7 +55,8 @@ protected:
 	virtual void run();
 
 public:
-	explicit SocketManagerWorker(Socket *socket, bool *interrupted, ConcurrentList<MapperModel*> * mapperDataList);
+	explicit SocketManagerWorker(Socket *socket, bool *interrupted,
+			ConcurrentList<MapperModel*> * mapperDataList);
 	virtual ~SocketManagerWorker();
 
 private:

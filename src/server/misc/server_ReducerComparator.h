@@ -12,7 +12,7 @@
 
 class ReducerComparator {
 public:
-	explicit ReducerComparator();
+	ReducerComparator();
 	virtual ~ReducerComparator();
 
 	static bool compare(ReducerModel * lrm, ReducerModel * rrm);

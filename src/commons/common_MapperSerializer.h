@@ -16,7 +16,7 @@
 
 class MapperSerializer {
 public:
-	explicit MapperSerializer();
+	MapperSerializer();
 	virtual ~MapperSerializer();
 
 	std::string serialize(MapperModel &dayModel);

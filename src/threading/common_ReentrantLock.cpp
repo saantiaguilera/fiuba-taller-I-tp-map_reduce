@@ -16,8 +16,9 @@
  * the scope will be locked and only
  * this thread is allowed to execute in it
  */
-ReentrantLock::ReentrantLock(Mutex &m) : m(m) {
-    m.lock();
+ReentrantLock::ReentrantLock(Mutex &m) :
+		m(m) {
+	m.lock();
 }
 
 /**
@@ -28,5 +29,5 @@ ReentrantLock::ReentrantLock(Mutex &m) : m(m) {
  * for other threads again
  */
 ReentrantLock::~ReentrantLock() {
-    m.unlock();
+	m.unlock();
 }

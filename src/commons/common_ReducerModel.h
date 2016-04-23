@@ -11,7 +11,6 @@
 #include <string>
 #include <utility>
 
-
 //(day, (citIES, temperature))
 typedef std::pair<int, std::pair<std::string, int> > ReducerModel;
 

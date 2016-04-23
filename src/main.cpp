@@ -16,15 +16,13 @@ int main() {
 	std::string port("8080");
 	std::string host("127.0.0.1");
 
-/*
-	Server server(port);
-	server.run();
-*/
-
+	/*
+	 Server server(port);
+	 server.run();
+	 */
 
 	Client client(host, port);
 	client.run();
-
 
 	return 0;
 }

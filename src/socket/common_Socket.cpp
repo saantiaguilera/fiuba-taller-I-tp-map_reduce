@@ -5,6 +5,7 @@
  *      Author: santiago
  */
 
+#include <string>
 #include "common_Socket.h"
 
 /**
@@ -45,7 +46,8 @@ Socket::~Socket() {
  * @returns addrinfo_t* with the available address to connect
  * @see connectivityState in socket_t* for the connection state
  */
-addrinfo_t* Socket::getAddrInfo(const std::string &hostName, const std::string &port) {
+addrinfo_t* Socket::getAddrInfo(const std::string &hostName,
+		const std::string &port) {
 	//Vars we will be using
 	int state;
 	addrinfo_t hints;
@@ -77,7 +79,8 @@ addrinfo_t* Socket::getAddrInfo(const std::string &hostName, const std::string &
 
 	//If error, set it in the socket connection and return NULL
 	if (state != 0) {
-		std::cout << "Error in getaddrinfo: " << gai_strerror(state) << std::endl;
+		std::cout << "Error in getaddrinfo: " << gai_strerror(state)
+				<< std::endl;
 		connectivityState = CONNECTIVITY_ERROR;
 		return NULL;
 	}
@@ -107,13 +110,14 @@ void Socket::connect(const std::string &port, const std::string &hostName) {
 	results = getAddrInfo(hostName, port);
 
 	//Avoid the @NullPointerException
-	if(connectivityState != CONNECTIVITY_OK)
+	if (connectivityState != CONNECTIVITY_OK)
 		return;
 
 	//Iterate through all of our possible address,
 	//create a socket with the config and try to connect
 	for (ptr = results; ptr != NULL && !connected; ptr = ptr->ai_next) {
-		this->mSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
+		this->mSocket = socket(ptr->ai_family, ptr->ai_socktype,
+				ptr->ai_protocol);
 
 		if (mSocket == CONNECTIVITY_ERROR) {
 			//We got an error, this address is down so try with the next
@@ -127,7 +131,7 @@ void Socket::connect(const std::string &port, const std::string &hostName) {
 				//Coudlnt connect (502?). Close the socket and try with the next
 				connectivityState = CONNECTIVITY_ERROR;
 				std::cout << "Error: " << strerror(errno) << std::endl;
-	            Socket::close();
+				Socket::close();
 			}
 
 			//If we could connect, stop trying. We are connected
@@ -150,41 +154,38 @@ void Socket::bind(const std::string &port, const std::string &hostName) {
 	addrinfo_t *result = getAddrInfo(hostName, port);
 
 	//Check against the NullPointerExcep
-	if(connectivityState != CONNECTIVITY_OK)
+	if (connectivityState != CONNECTIVITY_OK)
 		return;
 
 	//Create a socket and bind to it
-	mSocket = socket(result->ai_family,
-					result->ai_socktype,
-					result->ai_protocol);
+	mSocket = socket(result->ai_family, result->ai_socktype,
+			result->ai_protocol);
 
-	switch (::bind(mSocket,
-			result->ai_addr,
-			result->ai_addrlen)) {
-		case CONNECTIVITY_OK:
-			connectivityState = CONNECTIVITY_OK;
-			break;
+	switch (::bind(mSocket, result->ai_addr, result->ai_addrlen)) {
+	case CONNECTIVITY_OK:
+		connectivityState = CONNECTIVITY_OK;
+		break;
 
-		case CONNECTIVITY_ERROR:
-			connectivityState = CONNECTIVITY_ERROR;
-			break;
+	case CONNECTIVITY_ERROR:
+		connectivityState = CONNECTIVITY_ERROR;
+		break;
 
-		case CONNECTIVITY_UNDEFINED:
-			connectivityState = CONNECTIVITY_UNDEFINED;
+	case CONNECTIVITY_UNDEFINED:
+		connectivityState = CONNECTIVITY_UNDEFINED;
 	}
 
 	//Free used mem
-    freeaddrinfo(result);
+	freeaddrinfo(result);
 
-    if (connectivityState == CONNECTIVITY_ERROR) {
-    	//If we couldnt bind, close the socket and return
-    	std::cout << "Error: " << strerror(errno) << std::endl;
-    	Socket::close();
-    	return;
-    }
+	if (connectivityState == CONNECTIVITY_ERROR) {
+		//If we couldnt bind, close the socket and return
+		std::cout << "Error: " << strerror(errno) << std::endl;
+		Socket::close();
+		return;
+	}
 
-    //If we are here it means we made it!
-    connectivityState = CONNECTIVITY_OK;
+	//If we are here it means we made it!
+	connectivityState = CONNECTIVITY_OK;
 }
 
 /**
@@ -219,10 +220,11 @@ int Socket::select() {
 	tv.tv_sec = 0;
 	tv.tv_usec = 10000 * 100 * 10; //1msec * 100 = 1 sec * 10 = 10 sec
 
-    if ((socketsReady = ::select(FD_SETSIZE, &fdsetSocket, NULL, NULL, &tv)) < 0)
+	if ((socketsReady = ::select(FD_SETSIZE, &fdsetSocket, NULL, NULL, &tv))
+			< 0)
 		std::cout << "Error: " << strerror(errno) << std::endl;
 
-    return socketsReady;
+	return socketsReady;
 }
 
 Socket * Socket::accept() {
@@ -234,10 +236,10 @@ Socket * Socket::accept() {
 	if (socketToFork->mSocket == CONNECTIVITY_ERROR) {
 		//Damn, an error
 		std::cout << "Error: " << strerror(errno) << std::endl;
-		socketToFork->connectivityState =  CONNECTIVITY_ERROR;
+		socketToFork->connectivityState = CONNECTIVITY_ERROR;
 	} else {
 		//We did it!
-		socketToFork->connectivityState =  CONNECTIVITY_OK;
+		socketToFork->connectivityState = CONNECTIVITY_OK;
 	}
 
 	return socketToFork;
@@ -264,10 +266,8 @@ REQUEST_STATE Socket::send(const std::string &messageData) {
 	//As long as the bytes sent arent more than
 	//our length,  or the request suffered
 	//something, keep trying
-	while (bytesSent < messageData.length() &&
-			state == REQUEST_RECEIVING_DATA) {
-		sendResponse = ::send(mSocket,
-				&messageData[bytesSent],
+	while (bytesSent < messageData.length() && state == REQUEST_RECEIVING_DATA) {
+		sendResponse = ::send(mSocket, &messageData[bytesSent],
 				messageData.length() - bytesSent,
 				MSG_NOSIGNAL);
 
@@ -291,7 +291,6 @@ REQUEST_STATE Socket::send(const std::string &messageData) {
 	return state;
 }
 
-
 /**
  * Receive data through the connection
  *
@@ -303,8 +302,7 @@ REQUEST_STATE Socket::send(const std::string &messageData) {
  *
  * @returns REQUEST_STATE with the state of the "transaction"
  */
-REQUEST_STATE Socket::receive(char *response,
-		size_t buffLength) {
+REQUEST_STATE Socket::receive(char *response, size_t buffLength) {
 	//Init vars
 	int sendResponse = 0;
 	REQUEST_STATE state = REQUEST_RECEIVING_DATA;
@@ -317,8 +315,7 @@ REQUEST_STATE Socket::receive(char *response,
 	//and our bytes received arent more than
 	//our max capacity, keep receiving
 	while (state == REQUEST_RECEIVING_DATA && bytesReceived < buffLength) {
-		sendResponse = ::recv(mSocket,
-				&response[bytesReceived],
+		sendResponse = ::recv(mSocket, &response[bytesReceived],
 				buffLength - bytesReceived,
 				MSG_NOSIGNAL);
 
@@ -353,6 +350,4 @@ void Socket::close() {
 	::close(mSocket);
 	mSocket = -1;
 }
-
-
 

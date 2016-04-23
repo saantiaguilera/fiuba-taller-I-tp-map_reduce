@@ -5,6 +5,9 @@
  *      Author: santiago
  */
 
+#include <utility>
+#include <string>
+#include <list>
 #include "server_ReducerWorker.h"
 
 /**
@@ -75,7 +78,6 @@ void ReducerWorker::run() {
 	}
 
 	//Update the model
-	*resultContainer = std::pair<int, std::pair<std::string, int> >(
-			day,
+	*resultContainer = std::pair<int, std::pair<std::string, int> >(day,
 			std::pair<std::string, int>(citiesToString, hottestTemperature));
 }

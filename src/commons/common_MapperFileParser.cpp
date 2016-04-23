@@ -5,6 +5,8 @@
  *      Author: santiago
  */
 
+#include <utility>
+#include <string>
 #include "common_MapperFileParser.h"
 
 MapperFileParser::MapperFileParser() {
@@ -21,7 +23,8 @@ MapperModel * MapperFileParser::parse(std::string &line) {
 	iss >> temperature;
 	iss >> day;
 
-	std::pair<std::string, int> innerDataHolder(city, atoi(temperature.c_str()));
+	std::pair<std::string, int> innerDataHolder(city,
+			atoi(temperature.c_str()));
 
 	return new MapperModel(atoi(day.c_str()), innerDataHolder);
 }

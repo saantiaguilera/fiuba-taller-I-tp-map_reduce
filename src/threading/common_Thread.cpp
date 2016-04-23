@@ -10,12 +10,12 @@
 #include <cstdio>
 #include <pthread.h>
 
-
 /**
  * @Public
  * @Constructor
  */
-Thread::Thread() : thread() {
+Thread::Thread() :
+		thread() {
 }
 
 /**
@@ -30,7 +30,7 @@ Thread::~Thread() {
  * @Note: Joins this thread with the caller
  */
 void Thread::join() {
-    pthread_join(thread, NULL);
+	pthread_join(thread, NULL);
 }
 
 /**
@@ -51,7 +51,7 @@ void Thread::start() {
  * @Returns the invoked thread
  */
 void * Thread::runner(void *data) {
-    Thread *self = (Thread*)data;
-    self->run();
-    return data;
+	Thread *self = (Thread*) data;
+	self->run();
+	return data;
 }

@@ -20,9 +20,12 @@
  * Like a synchronized(object) of java.
  */
 /**
- * According to c++03 standard I need to declare here the methods
- * or well.. import the cpp file instead of .h or use explicit inst
- * in the cpp. Which of the three I like to just declare stuff
+ * According to c++03 standard I need to declare
+ * here the methods
+ * or well.. import the cpp file instead of .h or
+ * use explicit inst
+ * in the cpp. Which of the three I like to just
+ * declare stuff
  * here as the least worse.
  *
  * Standard says:
@@ -33,91 +36,93 @@
  * translation unit in which it is explicitly
  * instantiated.
  */
-template <class Element>
+template<class Element>
 class ConcurrentList {
 private:
 	Mutex mutex;
 	std::list<Element> elementList;
 
 public:
-	 explicit ConcurrentList() {};
-	 virtual ~ConcurrentList() {};
+	ConcurrentList() {
+	}
 
-	 void add(Element element) {
-	 	mutex.lock();
+	virtual ~ConcurrentList() {
+	}
 
-	 	elementList.push_back(element);
+	void add(Element element) {
+		mutex.lock();
 
-	 	mutex.unlock();
-	 }
+		elementList.push_back(element);
 
-	 void remove(Element element) {
-	 	mutex.lock();
+		mutex.unlock();
+	}
 
-	 	elementList.remove(element);
+	void remove(Element element) {
+		mutex.lock();
 
-	 	mutex.unlock();
-	 }
+		elementList.remove(element);
 
-	 int size() {
-		 mutex.lock();
+		mutex.unlock();
+	}
 
-		 int size  = elementList.size();
+	int size() {
+		mutex.lock();
 
-		 mutex.unlock();
+		int size = elementList.size();
 
-		 return size;
-	 }
+		mutex.unlock();
 
-	 std::list<Element> unblock() {
-		 return elementList;
-	 }
+		return size;
+	}
 
-	 void clear() {
-		 mutex.lock();
+	std::list<Element> unblock() {
+		return elementList;
+	}
 
-		 elementList.clear();
+	void clear() {
+		mutex.lock();
 
-		 mutex.unlock();
-	 }
+		elementList.clear();
 
-	 //So he can access our private stuff. c++11 onwards
-	 //Let us do this automatically w inner classes
-	 friend class ConcurrentIterator;
+		mutex.unlock();
+	}
 
-	 class ConcurrentIterator {
-	 	 private:
-		 	 //Because we cant access outer elements from inner classes
-		 	 //available from c++11 onwards
-		 	 ConcurrentList *list;
+	//So he can access our private stuff. c++11 onwards
+	//Let us do this automatically w inner classes
+	friend class ConcurrentIterator;
 
-		 public:
-			 explicit ConcurrentIterator(ConcurrentList *list) :
-			 	 	 	 list(list) {
-				 list->mutex.lock();
-			 }
+	class ConcurrentIterator {
+	private:
+		//Because we cant access outer elements from inner classes
+		//available from c++11 onwards
+		ConcurrentList *list;
 
-			 virtual ~ConcurrentIterator(){
-				 list->mutex.unlock();
-			 }
+	public:
+		explicit ConcurrentIterator(ConcurrentList *list) :
+				list(list) {
+			list->mutex.lock();
+		}
 
-			 typename std::list<Element>::iterator begin() {
-				 return list->elementList.begin();
-			 }
+		virtual ~ConcurrentIterator() {
+			list->mutex.unlock();
+		}
 
-			 typename std::list<Element>::iterator end() {
-				 return list->elementList.end();
-			 }
+		typename std::list<Element>::iterator begin() {
+			return list->elementList.begin();
+		}
 
-		 private:
-			 ConcurrentIterator(const ConcurrentIterator&);
-			 ConcurrentIterator& operator=(const ConcurrentIterator&);
-	 };
+		typename std::list<Element>::iterator end() {
+			return list->elementList.end();
+		}
+
+	private:
+		ConcurrentIterator(const ConcurrentIterator&);
+		ConcurrentIterator& operator=(const ConcurrentIterator&);
+	};
 
 private:
-	 ConcurrentList(const ConcurrentList&);
-	 ConcurrentList& operator=(const ConcurrentList&);
-
+	ConcurrentList(const ConcurrentList&);
+	ConcurrentList& operator=(const ConcurrentList&);
 };
 
 #endif /* COMMONS_COMMON_THREADSAFELIST_H_ */

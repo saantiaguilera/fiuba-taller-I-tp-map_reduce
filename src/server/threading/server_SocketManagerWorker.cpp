@@ -5,17 +5,17 @@
  *      Author: santiago
  */
 
+#include <list>
 #include "server_SocketManagerWorker.h"
 
 /**
  * @Public
  * @Constructor
  */
-SocketManagerWorker::SocketManagerWorker(Socket *socket,
-		bool *interrupted,
+SocketManagerWorker::SocketManagerWorker(Socket *socket, bool *interrupted,
 		ConcurrentList<MapperModel*> * mapperDataList) :
-		mainSocket(socket), interrupted(interrupted),
-		mapperDataList(mapperDataList) {
+		mainSocket(socket), interrupted(interrupted), mapperDataList(
+				mapperDataList) {
 	socketList = new std::list<Socket*>();
 	threadList = new std::list<Thread*>();
 	mainSocket->listen(SOMAXCONN);
@@ -27,8 +27,8 @@ SocketManagerWorker::SocketManagerWorker(Socket *socket,
  * @Destructor
  */
 SocketManagerWorker::~SocketManagerWorker() {
-	for (std::list<Socket*>::iterator it = socketList->begin() ;
-			it != socketList->end() ; ++it) {
+	for (std::list<Socket*>::iterator it = socketList->begin();
+			it != socketList->end(); ++it) {
 		delete (*it);
 	}
 
@@ -36,8 +36,8 @@ SocketManagerWorker::~SocketManagerWorker() {
 
 	delete socketList;
 
-	for (std::list<Thread*>::iterator it = threadList->begin() ;
-			it != threadList->end() ; ++it) {
+	for (std::list<Thread*>::iterator it = threadList->begin();
+			it != threadList->end(); ++it) {
 		delete (*it);
 	}
 
@@ -53,7 +53,7 @@ void SocketManagerWorker::run() {
 		int queueConnections = mainSocket->select();
 
 		if (queueConnections > 0) {
-			for (int i = 0 ; i < queueConnections ; ++i) {
+			for (int i = 0; i < queueConnections; ++i) {
 				Socket *clientSocket = mainSocket->accept();
 
 				if (clientSocket->connectivityState != CONNECTIVITY_ERROR) {
@@ -62,13 +62,17 @@ void SocketManagerWorker::run() {
 					socketList->push_back(clientSocket);
 
 					//Spawn him a thread and let him work
-					SocketReceiverWorker *worker = new SocketReceiverWorker(clientSocket, mapperDataList);
+					SocketReceiverWorker *worker = new SocketReceiverWorker(
+							clientSocket, mapperDataList);
 					worker->start();
 
 					threadList->push_back(worker);
 
-					std::cout << "Forked new thread for the connection" << std::endl;
-				} else delete clientSocket; //There was an error, delete alloc mem
+					std::cout << "Forked new thread for the connection"
+							<< std::endl;
+				} else {
+					delete clientSocket; //There was an error, delete alloc mem
+				}
 			}
 		}
 	}
@@ -76,8 +80,8 @@ void SocketManagerWorker::run() {
 	std::cout << "interruption in SM, joining connections" << std::endl;
 
 	//We got interrupted. Start joining
-	for (std::list<Thread*>::iterator it = threadList->begin() ;
-			it != threadList->end() ; ++it) {
+	for (std::list<Thread*>::iterator it = threadList->begin();
+			it != threadList->end(); ++it) {
 		(*it)->join();
 	}
 

@@ -18,16 +18,16 @@ class Mutex;
  * created
  */
 class ReentrantLock {
-    private:
-        Mutex &m;
+private:
+	Mutex &m;
 
-    public:
-        explicit ReentrantLock(Mutex &m);
-        virtual ~ReentrantLock();
+public:
+	explicit ReentrantLock(Mutex &m);
+	virtual ~ReentrantLock();
 
-    private:
-        ReentrantLock(const ReentrantLock&);
-        ReentrantLock& operator=(const ReentrantLock&);
+private:
+	ReentrantLock(const ReentrantLock&);
+	ReentrantLock& operator=(const ReentrantLock&);
 };
 
 #endif /* THREADING_COMMON_REENTRANTLOCK_H_ */

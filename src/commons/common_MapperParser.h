@@ -17,7 +17,7 @@
 
 class MapperParser {
 public:
-	explicit MapperParser();
+	MapperParser();
 	virtual ~MapperParser();
 
 	MapperModel * parse(std::string &line);

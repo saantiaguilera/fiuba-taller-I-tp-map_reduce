@@ -5,6 +5,7 @@
  *      Author: santiago
  */
 
+#include <string>
 #include "../socket/common_Socket.h"
 #include "stdexcept"
 #include "client_Client.h"
@@ -36,13 +37,16 @@ void Client::run() {
 	while (std::getline(std::cin, line)) {
 		MapperModel *mapperModel = parser->parse(line);
 
-		std::cout << "Model is:: " << mapperModel->first << " " << mapperModel->second.first << " " << mapperModel->second.second << std::endl;
+		std::cout << "Model is:: " << mapperModel->first << " "
+				<< mapperModel->second.first << " "
+				<< mapperModel->second.second << std::endl;
 
 		std::string mappedData = serializer->serialize(*mapperModel);
 
 		if (socket->send(mappedData) != REQUEST_RECEIVING_DATA)
 			throw std::runtime_error("Cant send!! (ﾉಥ益ಥ）ﾉ﻿ ┻━┻"); //refactor this
-		else std::cout << "Data sent." << std::endl;
+		else
+			std::cout << "Data sent." << std::endl;
 
 		delete mapperModel;
 	}

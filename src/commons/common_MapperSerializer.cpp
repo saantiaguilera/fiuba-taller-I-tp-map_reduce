@@ -5,6 +5,7 @@
  *      Author: santiago
  */
 
+#include <string>
 #include "common_MapperSerializer.h"
 
 MapperSerializer::MapperSerializer() {

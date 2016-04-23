@@ -10,6 +10,7 @@
 
 #include <list>
 #include <pthread.h>
+#include <string>
 #include "../../socket/common_Socket.h"
 #include "../../threading/common_Mutex.h"
 #include "../../commons/common_MapperModel.h"
@@ -19,7 +20,8 @@
 #include "../../commons/common_ThreadsafeList.h"
 
 /**
- * Worker thread class for a particular server receiver socket
+ * Worker thread class for a particular
+ * server receiver socket
  */
 class SocketReceiverWorker: public Thread {
 private:
@@ -32,7 +34,8 @@ protected:
 	virtual void run();
 
 public:
-	explicit SocketReceiverWorker(Socket *socket, ConcurrentList<MapperModel*> * list);
+	explicit SocketReceiverWorker(Socket *socket,
+			ConcurrentList<MapperModel*> * list);
 	virtual ~SocketReceiverWorker();
 
 private:

@@ -32,7 +32,7 @@ protected:
 	virtual void run();
 
 public:
-	explicit ReducerWorker();
+	ReducerWorker();
 
 	void attachResultContainer(ReducerModel *container);
 	void addData(MapperModel *data);

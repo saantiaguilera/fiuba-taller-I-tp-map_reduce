@@ -17,6 +17,7 @@
 #include "misc/server_ReducerComparator.h"
 #include <iostream>
 #include "stdexcept"
+#include <list>
 #include "threading/server_SocketManagerWorker.h"
 #include <string>
 #include "threading/server_ReducerWorker.h"

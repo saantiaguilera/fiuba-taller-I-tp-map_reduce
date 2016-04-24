@@ -7,6 +7,7 @@
 
 #include "common_Thread.h"
 
+#include <iostream>
 #include <cstdio>
 #include <pthread.h>
 

@@ -11,6 +11,7 @@
 
 //Code for stop listening for connections
 #define QUIT "q"
+#define MAX_WORKERS_SPAWN 4
 
 /**
  * @Public
@@ -104,19 +105,16 @@ void Server::receive() {
 void Server::reduce(std::list<ReducerWorker*> &list) {
 	//Join all the reducer workers
 	for (std::list<ReducerWorker*>::iterator it = list.begin();
-			it != list.end(); ++it) {
+			it != list.end() ; ++it) {
 		(*it)->join();
 	}
 
-	//Sort the list by day
-	reducedDataList->sort(ReducerComparator::compare);
-
-	//Print each day formatted accordingly
-	for (std::list<ReducerModel*>::iterator it = reducedDataList->begin();
-			it != reducedDataList->end(); ++it) {
-		std::cout << (*it)->first << ": " << (*it)->second.first << " ("
-				<< (*it)->second.second << ")" << std::endl;
+	//Delete the idle threads in memory
+	for (std::list<ReducerWorker*>::iterator it = list.begin();
+			it != list.end(); ++it) {
+		delete (*it);
 	}
+	list.clear();
 }
 
 /**
@@ -170,6 +168,8 @@ void Server::run() {
 
 	//Create a list for the reducers workers we will have
 	std::list<ReducerWorker*> workersList;
+
+	int threadsCreated = 0;
 
 	//While there are still data elements without a worker assigned
 	while (unblockedList.size() != 0) {
@@ -233,23 +233,34 @@ void Server::run() {
 		worker->start();
 
 		workersList.push_back(worker);
+
+		if (threadsCreated == MAX_WORKERS_SPAWN) {
+			/**
+			 * 4 workers should be spawned
+			 *
+			 * Start reducing. (Its already reducing
+			 * each worker, but this just waits
+			 * for them to finish / joins / prints
+			 * end results)
+			 */
+			reduce(workersList);
+
+			threadsCreated = 0;
+		} else {
+			threadsCreated++;
+		}
 	}
 
-	/**
-	 * All the workers should be spawned
-	 * leaving no data without a worker assigned.
-	 *
-	 * Start reducing. (Its already reducing
-	 * each worker, but this just waits
-	 * for them to finish / joins / prints
-	 * end results)
-	 */
-	reduce(workersList);
+	if (threadsCreated != 0)
+		reduce(workersList);
 
-	//Delete the idle threads in memory
-	for (std::list<ReducerWorker*>::iterator it = workersList.begin();
-			it != workersList.end(); ++it) {
-		delete (*it);
+	//Sort the list by day
+	reducedDataList->sort(ReducerComparator::compare);
+
+	//Print each day formatted accordingly
+	for (std::list<ReducerModel*>::iterator it = reducedDataList->begin();
+			it != reducedDataList->end(); ++it) {
+		std::cout << (*it)->first << ": " << (*it)->second.first << " ("
+				<< (*it)->second.second << ")" << std::endl;
 	}
-	workersList.clear();
 }

@@ -97,6 +97,5 @@ void SocketManagerWorker::run() {
 			it != threadList->end(); ++it) {
 		(*it)->join();
 	}
-
 	//We are done. Let us be merged, peace out !
 }

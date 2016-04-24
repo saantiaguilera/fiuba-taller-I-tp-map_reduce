@@ -52,7 +52,8 @@ addrinfo_t* Socket::getAddrInfo(const std::string &hostName,
 	int state;
 	addrinfo_t hints;
 	addrinfo_t *result;
-	std::string host = hostName;
+
+	bool isLocal;
 
 	//Clear the hints struct (or fill it with 0 ?)
 	memset(&hints, 0, sizeof(addrinfo_t));
@@ -69,13 +70,15 @@ addrinfo_t* Socket::getAddrInfo(const std::string &hostName,
 
 	if (hostName == "" || hostName == localHost) {
 		hints.ai_flags = LOCALHOST;
-		host = "localhost";
+		isLocal = true;
 	} else {
 		hints.ai_flags = 0;
+		isLocal = false;
 	}
 
 	//Get the addrinfo of it (inside results).
-	state = getaddrinfo(host.c_str(), port.c_str(), &hints, &result);
+	state = getaddrinfo(isLocal ? NULL : hostName.c_str(), port.c_str(), &hints,
+			&result);
 
 	//If error, set it in the socket connection and return NULL
 	if (state != 0) {
@@ -226,7 +229,7 @@ int Socket::select() {
 
 	struct timeval tv;
 	tv.tv_sec = 0;
-	tv.tv_usec = 10000 * 100 * 10; //1msec * 100 = 1 sec * 10 = 10 sec
+	tv.tv_usec = 10000 * 50; //10msec * 50 = 500ms (half second)
 
 	if ((socketsReady = ::select(FD_SETSIZE, &fdsetSocket, NULL, NULL, &tv))
 			< 0)

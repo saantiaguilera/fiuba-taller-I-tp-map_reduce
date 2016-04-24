@@ -52,7 +52,6 @@ void SocketReceiverWorker::flush(std::string &buffer) {
 		if (line.find("End") == std::string::npos) {
 			//Create a day and put it in the list
 			MapperModel *mappedModel = parser->parse(line);
-
 			postList->add(mappedModel);
 		} else {
 			stop = true; //We are in the end. Stop
